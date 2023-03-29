@@ -62,7 +62,7 @@ builds:
       md5-hash: "1c7194b1c167e696ae2ed29a548f27ed"
     patch:
       - "ramdisk-common-disable-root-pwd.patch"
-      - "ramdisk-42962-init-script.patch"
+      - "ramdisk-64216-init-script.patch"
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-42951-post-init-script.patch"
       
