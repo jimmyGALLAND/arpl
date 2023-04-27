@@ -6,7 +6,7 @@ synoinfo: &synoinfo
   support_bde_internal_10g: "no"
   support_oob_ctl: "no"
   support_led_brightness_adjustment: "no"
-  rss_server: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.xml"     # http://update7.synology.com/autoupdate/genRSS.php
+  rss_server: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.xml" # http://update7.synology.com/autoupdate/genRSS.php
   rss_server_ssl: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.xml" # https://update7.synology.com/autoupdate/genRSS.php
   rss_server_v2: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.json" # https://update7.synology.com/autoupdate/v2/getList
   support_syno_hybrid_raid:
@@ -89,6 +89,27 @@ builds:
     patch:
       - "ramdisk-common-disable-root-pwd.patch"
       - "ramdisk-common-init-script.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-42951-post-init-script.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"
+
+  64551:
+    ver: "7.2"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS3622xs%2B_64551.pat"
+      hash: "4d221e28af7310e5f4501d33dd79ae9f4a5b7b7f47b912c4b3dbfcc18bff9ed9"
+      ramdisk-hash: "3815cc9bc571495f0b3febadff3e4319cf0e083593df08b8ec6435c054c4a997"
+      zimage-hash: "4ec237df5850f9207edd7d0961ca07f0804b42cbafa002d0b6ed13cfd73acb41"
+      md5-hash: "e5355a2ea8305921dc1140b1dcfb8061"
+    patch:
+      - "ramdisk-64551-disable-root-pwd.patch"
+      - "ramdisk-64551-init-script.patch"
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-42951-post-init-script.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"

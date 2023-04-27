@@ -5,6 +5,7 @@ synoinfo: &synoinfo
   esataportcfg: "0x00"
   support_led_brightness_adjustment: "no"
   support_leds_lp3943: ""
+  support_bde_internal_10g: "no"
   buzzeroffen: "0xffff"
   rss_server: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.xml"
   rss_server_ssl: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.xml"
@@ -92,6 +93,27 @@ builds:
     patch:
       - "ramdisk-common-disable-root-pwd.patch"
       - "ramdisk-common-init-script.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-42951-post-init-script.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"
+
+  64551:
+    ver: "7.2"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS918%2B_64551.pat"
+      hash: "3603a03212b440e15aceb9d825a52639b086d260adf0e1deac2c4a574f2005a5"
+      ramdisk-hash: "a92bfc397af8fd1e3d5464a1563fde2e71c51d0e433a73238568c7e8cc94b911"
+      zimage-hash: "2830008cbd89bd07d2e3cce4b2c30d3a1fc881f1c9c45daa31f6ef1d9e3fbd2c"
+      md5-hash: "eec3052bd374c43c94fa76eebb75b037"
+    patch:
+      - "ramdisk-64551-disable-root-pwd.patch"
+      - "ramdisk-64551-init-script.patch"
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-42951-post-init-script.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"

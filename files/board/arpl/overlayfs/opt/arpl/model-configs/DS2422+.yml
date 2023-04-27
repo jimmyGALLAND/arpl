@@ -4,6 +4,7 @@ synoinfo: &synoinfo
   support_memory_compatibility: "no"
   supportssdcache: "no"
   support_led_brightness_adjustment: "no"
+  support_bde_internal_10g: "no"
   rss_server: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.xml"
   rss_server_ssl: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.xml"
   rss_server_v2: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.json"
@@ -85,5 +86,25 @@ builds:
     patch:
       - "ramdisk-common-disable-root-pwd.patch"
       - "ramdisk-common-init-script.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-42951-post-init-script.patch"
+
+  64551:
+    ver: "7.2"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS2422%2B_64551.pat"
+      hash: "1855c8ee9d0ad78762bc94cc3a16f22c5598caeb1518386037916940f309db66"
+      ramdisk-hash: "47ef2a1dd2592daf6350e806328e53d49080494a9025e9e137bf32145d5f44d5"
+      zimage-hash: "c2389d952c7ff9ca268fa0764b28891347d3071cfcf4129f6ce4d27f305d6538"
+      md5-hash: "b9de1171a1c2e23314b364315fd78f75"
+    patch:
+      - "ramdisk-64551-disable-root-pwd.patch"
+      - "ramdisk-64551-init-script.patch"
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-42951-post-init-script.patch"
