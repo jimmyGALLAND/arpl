@@ -58,15 +58,10 @@ jobs:
           echo "Getting latest modules"
           MODULES_DIR="files/board/arpl/p3/modules"
           TAG=`curl -s https://api.github.com/repos/jimmygalland/arpl-modules/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}'`
-          while read PLATFORM KVER; do
-            FILE="${PLATFORM}-${KVER}"
-            STATUS=`curl -w "%{http_code}" -L "https://github.com/jimmygalland/arpl-modules/releases/download/${TAG}/${FILE}.tgz" -o "${MODULES_DIR}/${FILE}.tgz"`
-            echo "Status=${STATUS}"
-            [ ${STATUS} -ne 200 ] && exit 1
-          done < PLATFORMS
-          STATUS=`curl -w "%{http_code}" -L "https://github.com/jimmygalland/arpl-modules/releases/download/${TAG}/firmware.tgz" -o "${MODULES_DIR}/firmware.tgz"`
+          STATUS=`curl -w "%{http_code}" -L "https://github.com/jimmygalland/arpl-modules/releases/download/${TAG}/modules.zip" -o "/tmp/modules.zip"`
           echo "Status=${STATUS}"
           [ ${STATUS} -ne 200 ] && exit 1
+          unzip "/tmp/modules.zip" -d "${MODULES_DIR}"
           echo OK
 
       # Clone buildroot repository (if not cached)
