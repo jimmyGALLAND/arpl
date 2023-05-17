@@ -1115,18 +1115,16 @@ function updateMenu() {
             --msgbox "Error checking new version" 0 0
           continue
         fi
-        for P in ${!PLATFORMS[@]}; do
+        dialog --backtitle "`backtitle`" --title "Update Modules" --aspect 18 \
+            --infobox "Downloading modules" 0 0
+        STATUS=`curl --insecure -s -w "%{http_code}" -L "https://github.com/jimmyGALLAND/arpl-modules/releases/download/${TAG}/modules.zip" -o "/tmp/modules.zip"`
+        if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
           dialog --backtitle "`backtitle`" --title "Update Modules" --aspect 18 \
-            --infobox "Downloading ${P} modules" 0 0
-          STATUS=`curl --insecure -s -w "%{http_code}" -L "https://github.com/jimmyGALLAND/arpl-modules/releases/download/${TAG}/${P}.tgz" -o "/tmp/${P}.tgz"`
-          if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
-            dialog --backtitle "`backtitle`" --title "Update Modules" --aspect 18 \
-              --msgbox "Error downloading ${P}.tgz" 0 0
-            continue
-          fi
-          rm "${MODULES_PATH}/${P}.tgz"
-          mv "/tmp/${P}.tgz" "${MODULES_PATH}/${P}.tgz"
-        done
+           --msgbox "Error downloading modules.zip" 0 0
+          continue
+        fi
+        rm -f "${MODULES_PATH}/*"
+        unzip "/tmp/modules.zip" -d "${MODULES_PATH}"
         # Rebuild modules if model/buildnumber is selected
         if [ -n "${PLATFORM}" -a -n "${KVER}" ]; then
           writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
