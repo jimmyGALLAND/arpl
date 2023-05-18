@@ -1036,7 +1036,7 @@ function updateMenu() {
       d)
         dialog --backtitle "`backtitle`" --title "Update addons" --aspect 18 \
           --infobox "Checking last version" 0 0
-        TAG=`curl --insecure -s https://api.github.com/repos/fbelavenuto/arpl-addons/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}'`
+        TAG=`curl --insecure -s https://api.github.com/repos/jimmyGALLAND/arpl-addons/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}'`
         if [ $? -ne 0 -o -z "${TAG}" ]; then
           dialog --backtitle "`backtitle`" --title "Update addons" --aspect 18 \
             --msgbox "Error checking new version" 0 0
@@ -1044,7 +1044,7 @@ function updateMenu() {
         fi
         dialog --backtitle "`backtitle`" --title "Update addons" --aspect 18 \
           --infobox "Downloading last version" 0 0
-        STATUS=`curl --insecure -s -w "%{http_code}" -L "https://github.com/fbelavenuto/arpl-addons/releases/download/${TAG}/addons.zip" -o /tmp/addons.zip`
+        STATUS=`curl --insecure -s -w "%{http_code}" -L "https://github.com/jimmyGALLAND/arpl-addons/releases/download/${TAG}/addons.zip" -o /tmp/addons.zip`
         if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
           dialog --backtitle "`backtitle`" --title "Update addons" --aspect 18 \
             --msgbox "Error downloading new version" 0 0
@@ -1123,8 +1123,8 @@ function updateMenu() {
            --msgbox "Error downloading modules.zip" 0 0
           continue
         fi
-        rm -f "${MODULES_PATH}/*"
-        unzip -o "/tmp/modules.zip" -d "${MODULES_PATH}"
+        rm -rf "${MODULES_PATH}"
+        unzip -o "/tmp/modules.zip" -d "${MODULES_PATH}"  >/dev/null 2>&1
         # Rebuild modules if model/buildnumber is selected
         if [ -n "${PLATFORM}" -a -n "${KVER}" ]; then
           writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
