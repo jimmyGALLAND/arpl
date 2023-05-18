@@ -1,6 +1,7 @@
 
 ARPL_VERSION="1.2.1"
 
+
 # Define paths
 TMP_PATH="/tmp"
 UNTAR_PAT_PATH="${TMP_PATH}/pat"
