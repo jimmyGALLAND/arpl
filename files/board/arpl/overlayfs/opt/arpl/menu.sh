@@ -1124,7 +1124,7 @@ function updateMenu() {
           continue
         fi
         rm -f "${MODULES_PATH}/*"
-        unzip "/tmp/modules.zip" -d "${MODULES_PATH}"
+        unzip -o "/tmp/modules.zip" -d "${MODULES_PATH}"
         # Rebuild modules if model/buildnumber is selected
         if [ -n "${PLATFORM}" -a -n "${KVER}" ]; then
           writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
