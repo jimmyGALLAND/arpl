@@ -128,7 +128,7 @@ jobs:
       # Convert po2mo, Get extractor, LKM, addons and Modules
       - name: Convert po2mo, Get extractor, LKM, addons and Modules
         run: |
-          . scripts/func.sh "${{ github.repository.owner }}"
+          . scripts/func.sh "$GITHUB_REPOSITORY_OWNER"
 
           convertpo2mo "files/board/arpl/overlayfs/opt/arpl/lang"
           # getExtractor "files/board/arpl/p3/extractor"   no proprietary binariesno proprietary binaries
