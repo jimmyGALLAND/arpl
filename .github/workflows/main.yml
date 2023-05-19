@@ -1,4 +1,11 @@
-name: Build image
+#
+# Copyright (C) 2022 Ing <https://github.com/wjz304>
+# 
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+
+name: Build arpl
 
 on:
   push:
@@ -6,14 +13,34 @@ on:
       - main
     tags:
       - v*
+
+  release:
+    types: [published]
+
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'format %y.%-m.$i or auto'
+        required: false
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@main
 
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+          sudo apt update
+          sudo apt install -y jq gettext libelf-dev qemu-utils
+          sudo snap install yq
+          
       # Check dl cache
       - name: Cache downloads
         id: dl-cache
@@ -30,45 +57,11 @@ jobs:
           path: .buildroot
           key: ${{ runner.os }}-${{ hashFiles('files/configs/arpl_defconfig') }}
 
-      # Install dependencies
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libelf-dev qemu-utils
-          sudo cp -f files/board/arpl/overlayfs/usr/bin/yq /usr/bin/yq
-
-      # Get latests LKM, addons and modules
-      - name: Get latests LKM, addons and Modules
-        run: |
-          # Get latest LKMs
-          echo "Getting latest LKMs"
-          TAG=`curl -s https://api.github.com/repos/jimmygalland/redpill-lkm/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}'`
-          STATUS=`curl -w "%{http_code}" -L "https://github.com/jimmygalland/redpill-lkm/releases/download/${TAG}/rp-lkms.zip" -o /tmp/rp-lkms.zip`
-          echo "Status=${STATUS}"
-          [ ${STATUS} -ne 200 ] && exit 1
-
-          # Get latest addons and install its
-          echo "Getting latest Addons"
-          TAG=`curl -s https://api.github.com/repos/jimmygalland/arpl-addons/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}'`
-          STATUS=`curl -w "%{http_code}" -L "https://github.com/jimmygalland/arpl-addons/releases/download/${TAG}/addons.zip" -o /tmp/addons.zip`
-          echo "Status=${STATUS}"
-          [ ${STATUS} -ne 200 ] && exit 1
-
-          # Get latest modules
-          echo "Getting latest modules"
-          MODULES_DIR="files/board/arpl/p3/modules"
-          TAG=`curl -s https://api.github.com/repos/jimmygalland/arpl-modules/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}'`
-          STATUS=`curl -w "%{http_code}" -L "https://github.com/jimmygalland/arpl-modules/releases/download/${TAG}/modules.zip" -o "/tmp/modules.zip"`
-          echo "Status=${STATUS}"
-          [ ${STATUS} -ne 200 ] && exit 1
-          unzip "/tmp/modules.zip" -d "${MODULES_DIR}"
-          echo OK
-
       # Clone buildroot repository (if not cached)
       - name: Clone buildroot
         if: steps.br-cache.outputs.cache-hit != 'true'
         run: |
-          git clone --single-branch -b 2022.02 https://github.com/buildroot/buildroot.git .buildroot
+          git clone --single-branch -b 2023.02.x https://github.com/buildroot/buildroot.git .buildroot
           # Copy files
           echo "Copying files"
           cp -Ru files/* .buildroot
@@ -91,40 +84,76 @@ jobs:
           cd .buildroot
           make BR2_EXTERNAL=../external
 
+      # calculates the version number and push
+      - name: Calculate version
+        run: |
+          # Calculate version
+          VERSION=""
+          if [[ "${{ github.event_name }}" =~ ^(push|release)$ && "${{ github.ref_type }}" == 'tag' ]]; then
+            VERSION="${{ github.ref_name }}"
+          elif [ -n "${{ inputs.version }}" ]; then
+            if [ "`echo ${{ inputs.version }} | cut -d '.' -f 1,2`" = "`date +'%y.%-m'`" ]; then
+              VERSION="${{ inputs.version }}"
+            else
+              LATEST_TAG="`curl -skL "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r ".tag_name" 2>/dev/null`"
+              if [ -n "${LATEST_TAG}" -a "`echo ${LATEST_TAG} | cut -d '.' -f 1,2`" = "`date +'%y.%-m'`" ]; then  # format %y.%-m.$i
+                VERSION="`echo ${LATEST_TAG} | awk -F '.' '{$3=$3+1}1' OFS='.'`"
+              else
+                VERSION="`date +'%y.%-m'`.0"
+              fi
+            fi
+          else
+            VERSION=""
+          fi
+
+          echo "VERSION: ${VERSION}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+          if [ -n "${VERSION}" ]; then
+            # Modify Source File
+            echo "${VERSION}" > VERSION
+            echo "${VERSION}" > files/board/arpl/p1/ARPL-VERSION
+            sed 's/^ARPL_VERSION=.*/ARPL_VERSION="'${VERSION}'"/' -i files/board/arpl/overlayfs/opt/arpl/include/consts.sh
+
+            git checkout main
+            git pull
+            status=$(git status -s | awk '{printf " %s", $2}')
+            if [ -n "${status}" ]; then
+              git add ${status}
+              git commit -m "update $(date +%Y-%m-%d" "%H:%M:%S)"
+              git push -f
+            fi
+          fi
+
+      # Convert po2mo, Get extractor, LKM, addons and Modules
+      - name: Convert po2mo, Get extractor, LKM, addons and Modules
+        run: |
+          . scripts/func.sh "${{ github.repository }}"
+
+          convertpo2mo "files/board/arpl/overlayfs/opt/arpl/lang"
+          # getExtractor "files/board/arpl/p3/extractor"   no proprietary binariesno proprietary binaries
+          getLKMs "files/board/arpl/p3/lkms"
+          getAddons "files/board/arpl/p3/addons"
+          getModules "files/board/arpl/p3/modules"
+
+          echo "OK"
+
       # Build incremental from caches
       - name: Build image
-        id: build
         run: |
-          VERSION=`<VERSION`
-          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
           # Remove old files
           rm -rf .buildroot/output/target/opt/arpl
           rm -rf .buildroot/board/arpl/overlayfs
           rm -rf .buildroot/board/arpl/p1
           rm -rf .buildroot/board/arpl/p3
-          # Unzip LKMs
-          rm -rf files/board/arpl/p3/lkms/*
-          unzip /tmp/rp-lkms.zip -d files/board/arpl/p3/lkms
-          # Install Addons
-          mkdir -p /tmp/addons
-          unzip /tmp/addons.zip -d /tmp/addons
-          DEST_PATH="files/board/arpl/p3/addons"
-          echo "Installing addons to ${DEST_PATH}"
-          for PKG in `ls /tmp/addons/*.addon`; do
-            ADDON=`basename ${PKG} | sed 's|.addon||'`
-            mkdir -p "${DEST_PATH}/${ADDON}"
-            echo "Extracting ${PKG} to ${DEST_PATH}/${ADDON}"
-            tar xaf "${PKG}" -C "${DEST_PATH}/${ADDON}"
-          done
+
           # Copy files
           echo "Copying files"
-          sed 's/^ARPL_VERSION=.*/ARPL_VERSION="'${VERSION}'"/' -i files/board/arpl/overlayfs/opt/arpl/include/consts.sh
-          echo "${VERSION}" > files/board/arpl/p1/ARPL-VERSION
           cp -Ru files/* .buildroot/
+
           cd .buildroot
           echo "Generating default config"
           make BR2_EXTERNAL=../external arpl_defconfig
-          echo "Version: ${VERSION}"
           echo "Building..."
           make BR2_EXTERNAL=../external
           cd -
@@ -133,17 +162,20 @@ jobs:
 
       # Zip image and generate checksum
       - name: Pack
-        shell: bash
         run: |
-          zip -9 "arpl-${{ steps.build.outputs.VERSION }}.img.zip" arpl.img
-          zip -9 "arpl-${{ steps.build.outputs.VERSION }}.vmdk-dyn.zip" arpl-dyn.vmdk
-          zip -9 "arpl-${{ steps.build.outputs.VERSION }}.vmdk-flat.zip" arpl.vmdk arpl-flat.vmdk
-          sha256sum update-list.yml > sha256sum
-          zip -9j update.zip update-list.yml
+          if [ -n "${{ env.VERSION }}" ]; then
+            zip -9 "arpl-${{ env.VERSION }}.img.zip" arpl.img
+            zip -9 "arpl-${{ env.VERSION }}.vmdk-dyn.zip" arpl-dyn.vmdk
+            zip -9 "arpl-${{ env.VERSION }}.vmdk-flat.zip" arpl.vmdk arpl-flat.vmdk
+          else
+            zip -9 "arpl-img.zip" arpl.img
+          fi
+          sha256sum update-list.yml update-check.sh > sha256sum
+          zip -9j update.zip update-list.yml update-check.sh
           while read F; do
             if [ -d "${F}" ]; then
               FTGZ="`basename "${F}"`.tgz"
-              tar czf "${FTGZ}" -C "${F}" .
+              tar -czf "${FTGZ}" -C "${F}" .
               sha256sum "${FTGZ}" >> sha256sum
               zip -9j update.zip "${FTGZ}"
               rm "${FTGZ}"
@@ -153,23 +185,25 @@ jobs:
             fi
           done < <(yq '.replace | explode(.) | to_entries | map([.key])[] | .[]' update-list.yml)
           zip -9j update.zip sha256sum 
+
       # Upload artifact
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
           name: Images
           path: |
-            arpl.img
-            arpl*.vmdk
+            arpl.img.zip
+            update.zip
           retention-days: 5
 
       # Publish a release if is a tag
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: env.VERSION != ''
         with:
+          tag_name: ${{ env.VERSION }}
           files: |
-            arpl-${{ steps.build.outputs.VERSION }}.img.zip
-            arpl-${{ steps.build.outputs.VERSION }}.vmdk-dyn.zip
-            arpl-${{ steps.build.outputs.VERSION }}.vmdk-flat.zip
+            arpl-${{ env.VERSION }}.img.zip
+            arpl-${{ env.VERSION }}.vmdk-dyn.zip
+            arpl-${{ env.VERSION }}.vmdk-flat.zip
             update.zip

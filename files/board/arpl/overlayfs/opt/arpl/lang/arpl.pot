@@ -1,0 +1,578 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-05-19 20:56+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: menu.sh:67
+msgid "Model"
+msgstr ""
+
+#: menu.sh:68
+msgid "Reading models"
+msgstr ""
+
+#: menu.sh:93
+msgid "Disable flags restriction"
+msgstr ""
+
+#: menu.sh:94
+msgid "Show beta models"
+msgstr ""
+
+#: menu.sh:95
+msgid "Choose the model"
+msgstr ""
+
+#: menu.sh:133
+msgid "Choose a build number"
+msgstr ""
+
+#: menu.sh:142
+msgid "Build Number"
+msgstr ""
+
+#: menu.sh:143
+msgid "Reconfiguring Synoinfo, Addons and Modules"
+msgstr ""
+
+#: menu.sh:176 menu.sh:345 menu.sh:444 menu.sh:834
+msgid "Choose a option"
+msgstr ""
+
+#: menu.sh:177
+msgid "Generate a random serial number"
+msgstr ""
+
+#: menu.sh:178
+msgid "Enter a serial number"
+msgstr ""
+
+#: menu.sh:186
+msgid "Please enter a serial number "
+msgstr ""
+
+#: menu.sh:195 menu.sh:927
+msgid "Alert"
+msgstr ""
+
+#: menu.sh:196
+msgid "Invalid serial, continue?"
+msgstr ""
+
+#: menu.sh:226
+msgid "Add an addon"
+msgstr ""
+
+#: menu.sh:227
+msgid "Delete addon(s)"
+msgstr ""
+
+#: menu.sh:228
+msgid "Show user addons"
+msgstr ""
+
+#: menu.sh:229
+msgid "Show all available addons"
+msgstr ""
+
+#: menu.sh:230
+msgid "Download a external addon"
+msgstr ""
+
+#: menu.sh:231 menu.sh:342 menu.sh:440 menu.sh:724 menu.sh:839 menu.sh:970
+#: menu.sh:1179
+msgid "Exit"
+msgstr ""
+
+#: menu.sh:242
+msgid "No available addons to add"
+msgstr ""
+
+#: menu.sh:246
+msgid "Select an addon"
+msgstr ""
+
+#: menu.sh:251
+msgid "params"
+msgstr ""
+
+#: menu.sh:252
+msgid "Type a opcional params to addon"
+msgstr ""
+
+#: menu.sh:261
+msgid "No user addons to remove"
+msgstr ""
+
+#: menu.sh:269
+msgid "Select addon to remove"
+msgstr ""
+
+#: menu.sh:285
+msgid "User addons"
+msgstr ""
+
+#: menu.sh:298
+msgid "Available addons"
+msgstr ""
+
+#: menu.sh:302
+msgid "please enter the complete URL to download."
+msgstr ""
+
+#: menu.sh:309
+msgid "Downloading"
+msgstr ""
+
+#: menu.sh:313
+msgid "Check internet, URL or cache disk space"
+msgstr ""
+
+#: menu.sh:318
+msgid "Success"
+msgstr ""
+
+#: menu.sh:321
+msgid "Invalid addon"
+msgstr ""
+
+#: menu.sh:322
+msgid "File format not recognized!"
+msgstr ""
+
+#: menu.sh:337
+msgid "Add/edit a cmdline item"
+msgstr ""
+
+#: menu.sh:338
+msgid "Delete cmdline item(s)"
+msgstr ""
+
+#: menu.sh:339
+msgid "Define a custom MAC"
+msgstr ""
+
+#: menu.sh:340
+msgid "Show user cmdline"
+msgstr ""
+
+#: menu.sh:341
+msgid "Show model/build cmdline"
+msgstr ""
+
+#: menu.sh:350 menu.sh:356 menu.sh:386 menu.sh:394 menu.sh:412
+msgid "User cmdline"
+msgstr ""
+
+#: menu.sh:351
+msgid "Type a name of cmdline"
+msgstr ""
+
+#: menu.sh:357
+msgid "Type a value of '%s' cmdline"
+msgstr ""
+
+#: menu.sh:366
+msgid "No user cmdline to remove"
+msgstr ""
+
+#: menu.sh:374
+msgid "Select cmdline to remove"
+msgstr ""
+
+#: menu.sh:394
+msgid "Invalid MAC"
+msgstr ""
+
+#: menu.sh:402
+msgid "Changing mac"
+msgstr ""
+
+#: menu.sh:404
+msgid "Renewing IP"
+msgstr ""
+
+#: menu.sh:420
+msgid "Model/build"
+msgstr ""
+
+#: menu.sh:437
+msgid "Add/edit a synoinfo item"
+msgstr ""
+
+#: menu.sh:438
+msgid "Delete synoinfo item(s)"
+msgstr ""
+
+#: menu.sh:439
+msgid "Show synoinfo entries"
+msgstr ""
+
+#: menu.sh:449 menu.sh:455 menu.sh:490
+msgid "Synoinfo entries"
+msgstr ""
+
+#: menu.sh:450
+msgid "Type a name of synoinfo entry"
+msgstr ""
+
+#: menu.sh:466
+msgid "No synoinfo entries to remove"
+msgstr ""
+
+#: menu.sh:474
+msgid "Select synoinfo entry to remove"
+msgstr ""
+
+#: menu.sh:524
+msgid "Downloading %s"
+msgstr ""
+
+#: menu.sh:534 menu.sh:597
+msgid "Error downloading"
+msgstr ""
+
+#: menu.sh:535 menu.sh:598
+msgid "Check internet or cache disk space"
+msgstr ""
+
+#: menu.sh:542 menu.sh:568 menu.sh:637 menu.sh:648 menu.sh:677 menu.sh:687
+#: menu.sh:694
+msgid "Error"
+msgstr ""
+
+#: menu.sh:543
+msgid "Hash of pat not match, try again!"
+msgstr ""
+
+#: menu.sh:569
+msgid ""
+"Could not determine if pat file is encrypted or not, maybe corrupted, try "
+"again!"
+msgstr ""
+
+#: menu.sh:587
+msgid "Downloading old pat to extract synology .pat extractor..."
+msgstr ""
+
+#: menu.sh:609 menu.sh:629
+msgid "Error extracting"
+msgstr ""
+
+#: menu.sh:623 menu.sh:626
+msgid "Extracting..."
+msgstr ""
+
+#: menu.sh:633
+msgid "Checking hash of zImage: "
+msgstr ""
+
+#: menu.sh:638
+msgid "Hash of zImage not match, try again!"
+msgstr ""
+
+#: menu.sh:644
+msgid "Checking hash of ramdisk: "
+msgstr ""
+
+#: menu.sh:649
+msgid "Hash of ramdisk not match, try again!"
+msgstr ""
+
+#: menu.sh:655
+msgid "Copying files: "
+msgstr ""
+
+#: menu.sh:678
+msgid "Addon %s not found!"
+msgstr ""
+
+#: menu.sh:688
+msgid "zImage not patched:"
+msgstr ""
+
+#: menu.sh:695
+msgid "Ramdisk not patched:"
+msgstr ""
+
+#: menu.sh:699 menu.sh:1196
+msgid "Cleaning"
+msgstr ""
+
+#: menu.sh:702
+msgid "Ready!"
+msgstr ""
+
+#: menu.sh:715
+msgid "Switch LKM version"
+msgstr ""
+
+#: menu.sh:716 menu.sh:850
+msgid "Modules"
+msgstr ""
+
+#: menu.sh:719
+msgid "Switch direct boot"
+msgstr ""
+
+#: menu.sh:721
+msgid "Edit user config file manually"
+msgstr ""
+
+#: menu.sh:722
+msgid "Try to recovery a DSM installed system"
+msgstr ""
+
+#: menu.sh:723
+msgid "Show SATA(s)) # ports and drives"
+msgstr ""
+
+#: menu.sh:726
+msgid "Advanced"
+msgstr ""
+
+#: menu.sh:727
+msgid "Choose the option"
+msgstr ""
+
+#: menu.sh:766
+msgid "\\nTotal of ports: %s\\n"
+msgstr ""
+
+#: menu.sh:767
+msgid ""
+"\\nPorts with color \\Z1red\\Zn as DUMMY, color \\Z2\\Zbgreen\\Zn has drive "
+"connected."
+msgstr ""
+
+#: menu.sh:779 menu.sh:807 menu.sh:814
+msgid "Try recovery DSM"
+msgstr ""
+
+#: menu.sh:780
+msgid "Trying to recovery a DSM installed system"
+msgstr ""
+
+#: menu.sh:801
+msgid "Found a installation:\\n%s: \\n%s:"
+msgstr ""
+
+#: menu.sh:815
+msgid "Unfortunately I couldn't mount the DSM partition!"
+msgstr ""
+
+#: menu.sh:825
+msgid "Reading modules"
+msgstr ""
+
+#: menu.sh:835
+msgid "Show selected modules"
+msgstr ""
+
+#: menu.sh:836
+msgid "Select all modules"
+msgstr ""
+
+#: menu.sh:837
+msgid "Deselect all modules"
+msgstr ""
+
+#: menu.sh:838
+msgid "Choose modules to include"
+msgstr ""
+
+#: menu.sh:847
+msgid "User modules"
+msgstr ""
+
+#: menu.sh:851
+msgid "Selecting all modules"
+msgstr ""
+
+#: menu.sh:862
+msgid "Deselecting all modules"
+msgstr ""
+
+#: menu.sh:875
+msgid "Select modules to include"
+msgstr ""
+
+#: menu.sh:881
+msgid "Writing to user config"
+msgstr ""
+
+#: menu.sh:908
+msgid "Invalid YAML format"
+msgstr ""
+
+#: menu.sh:928
+msgid "Config changed, would you like to rebuild the loader?"
+msgstr ""
+
+#: menu.sh:939
+msgid "Choose a layout"
+msgstr ""
+
+#: menu.sh:949
+msgid "Choice a keymap"
+msgstr ""
+
+#: menu.sh:966 menu.sh:975 menu.sh:1001 menu.sh:1008 menu.sh:1012 menu.sh:1029
+msgid "Update arpl"
+msgstr ""
+
+#: menu.sh:967 menu.sh:1037 menu.sh:1041 menu.sh:1049 menu.sh:1053 menu.sh:1058
+#: menu.sh:1068
+msgid "Update addons"
+msgstr ""
+
+#: menu.sh:968 menu.sh:1073 menu.sh:1077 menu.sh:1081 menu.sh:1085 menu.sh:1089
+#: menu.sh:1094
+msgid "Update LKMs"
+msgstr ""
+
+#: menu.sh:969
+msgid "Update modules"
+msgstr ""
+
+#: menu.sh:976 menu.sh:1038 menu.sh:1074 menu.sh:1111
+msgid "Checking last version"
+msgstr ""
+
+#: menu.sh:981 menu.sh:1042 menu.sh:1078 menu.sh:1115
+msgid "Error checking new version"
+msgstr ""
+
+#: menu.sh:986
+msgid "No new version. Actual version is %s\\nForce update?"
+msgstr ""
+
+#: menu.sh:990 menu.sh:1046 menu.sh:1082
+msgid "Downloading last version"
+msgstr ""
+
+#: menu.sh:996
+msgid "Error downloading update file"
+msgstr ""
+
+#: menu.sh:1002
+msgid "Error extracting update file"
+msgstr ""
+
+#: menu.sh:1009
+msgid "Checksum do not match!"
+msgstr ""
+
+#: menu.sh:1013
+msgid "Installing new files"
+msgstr ""
+
+#: menu.sh:1030
+msgid "Arpl updated with success to %s!\\nReboot?"
+msgstr ""
+
+#: menu.sh:1050
+msgid "Error downloading new version"
+msgstr ""
+
+#: menu.sh:1054 menu.sh:1090
+msgid "Extracting last version"
+msgstr ""
+
+#: menu.sh:1059
+msgid "Installing new addons"
+msgstr ""
+
+#: menu.sh:1069
+msgid "Addons updated with success!"
+msgstr ""
+
+#: menu.sh:1086
+msgid "Error downloading last version"
+msgstr ""
+
+#: menu.sh:1095
+msgid "LKMs updated with success!"
+msgstr ""
+
+#: menu.sh:1110 menu.sh:1114 menu.sh:1118 menu.sh:1122 menu.sh:1136
+msgid "Update Modules"
+msgstr ""
+
+#: menu.sh:1119
+msgid "Downloading modules"
+msgstr ""
+
+#: menu.sh:1123
+msgid "Error downloading "
+msgstr ""
+
+#: menu.sh:1137
+msgid "Modules updated with success!"
+msgstr ""
+
+#: menu.sh:1155
+msgid "Choose a model"
+msgstr ""
+
+#: menu.sh:1157
+msgid "Choose a Build Number"
+msgstr ""
+
+#: menu.sh:1158
+msgid "Choose a serial number"
+msgstr ""
+
+#: menu.sh:1160
+msgid "Addons"
+msgstr ""
+
+#: menu.sh:1161
+msgid "Cmdline menu"
+msgstr ""
+
+#: menu.sh:1162
+msgid "Synoinfo menu"
+msgstr ""
+
+#: menu.sh:1165
+msgid "Advanced menu"
+msgstr ""
+
+#: menu.sh:1168
+msgid "Build the loader"
+msgstr ""
+
+#: menu.sh:1172
+msgid "Boot the loader"
+msgstr ""
+
+#: menu.sh:1174
+msgid "Choose a keymap"
+msgstr ""
+
+#: menu.sh:1176
+msgid "Clean disk cache"
+msgstr ""
+
+#: menu.sh:1178
+msgid "Update menu"
+msgstr ""
+
+#: menu.sh:1203
+msgid "Call %s to return to menu"
+msgstr ""
