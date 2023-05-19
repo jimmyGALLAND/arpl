@@ -23,6 +23,46 @@ function convertpo2mo() {
     echo "Convert po2mo end"
 }
 
+# Get extractor
+# $1 path
+function getExtractor(){
+    echo "Getting syno extractor begin"
+    local DEST_PATH="${1:-extractor}"
+    local CACHE_DIR="/tmp/pat"
+    rm -rf "${CACHE_DIR}"; mkdir -p "${CACHE_DIR}"
+    # Download pat file
+    # global.synologydownload.com, global.download.synology.com, cndl.synology.cn
+    local PAT_URL="https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat"
+    local PAT_FILE="DSM_DS3622xs+_42218.pat"
+    local STATUS=`curl -# -w "%{http_code}" -L "${PAT_URL}" -o "${CACHE_DIR}/${PAT_FILE}"`
+    if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
+      echo "[E] DSM_DS3622xs%2B_42218.pat download error!"
+      rm -rf ${CACHE_DIR}
+      exit 1
+    fi
+
+    mkdir -p "${CACHE_DIR}/ramdisk"
+    tar -C "${CACHE_DIR}/ramdisk/" -xf "${CACHE_DIR}/${PAT_FILE}" rd.gz 2>&1
+    if [ $? -ne 0 ]; then
+      echo "[E] extractor rd.gz error!"
+      rm -rf ${CACHE_DIR}
+      exit 1
+    fi
+    (cd "${CACHE_DIR}/ramdisk"; xz -dc < rd.gz | cpio -idm) >/dev/null 2>&1 || true
+
+    rm -rf "${DEST_PATH}"; mkdir -p "${DEST_PATH}"
+
+    # Copy only necessary files
+    for f in libcurl.so.4 libmbedcrypto.so.5 libmbedtls.so.13 libmbedx509.so.1 libmsgpackc.so.2 libsodium.so libsynocodesign-ng-virtual-junior-wins.so.7; do
+      cp "${CACHE_DIR}/ramdisk/usr/lib/${f}" "${DEST_PATH}"
+    done
+    cp "${CACHE_DIR}/ramdisk/usr/syno/bin/scemd" "${DEST_PATH}/syno_extract_system_patch"
+
+    # Clean up
+    rm -rf ${CACHE_DIR}
+    echo "Getting syno extractor end"
+}
+
 
 # Get latest LKMs
 # $1 path
