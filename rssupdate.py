@@ -124,7 +124,9 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
     print(models)
     
     # Get beta pats
-    # 临时对策, RC 64551 目前并没有在 archive.synology.com 上线, beta 又为 64216, 临时用 64216 的地址进行替换.
+    #Contre-mesures temporaires, RC 64551 n'est pas actuellement en ligne sur archive.synology.com, la version bêta est 64216, utilisez temporairement l'adresse 64216 pour la remplacer.
+
+
     pats = {}
     req = requests.get('https://prerelease.synology.com/webapi/models?event=dsm72_beta', headers=headers)
     rels = json.loads(req.text)
@@ -212,18 +214,16 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
                             if rssjson["channel"]["item"][idx]["BuildNum"] == int(ver):
                                 rssjson["channel"]["item"][idx]["model"].append({"mUnique": hashdata["unique"], "mLink": hashdata["url"], "mCheckSum": hashdata["md5-hash"]})
             # if isUpdateConfigs is True:
-            #     # pyyaml 会修改文件格式
+            #     # pyyaml mdifiera le format du fichier
             #     if isChange is True:
             #         with open(os.path.join(FILE_PATH, configs, filename), "w", encoding='utf-8') as f:
-            #             yaml.dump(data, f, Dumper=yaml.SafeDumper, sort_keys=False)  # 双引号: default_style='"', 
+            #             yaml.dump(data, f, Dumper=yaml.SafeDumper, sort_keys=False)   
         except:
             pass
 
     rssxml.write("rss.xml", xml_declaration=True)
-    # ET 处理 rss 的后与原有rss会多一个encode
     commands = ['sed', '-i', 's|^<?xml .*\?>$|<?xml version="1.0"?>|', os.path.join(FILE_PATH, 'rss.xml')]
     result = subprocess.check_output(commands)
-    # ET 处理 rss 的并不会格式化
     commands = ['xmllint', '--format', 'rss.xml', '-o', 'rss_new.xml']
     result = subprocess.check_output(commands)
     commands = ['mv', 'rss_new.xml', 'rss.xml']
