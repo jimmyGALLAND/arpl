@@ -457,7 +457,7 @@ function synoinfoMenu() {
       NAME="$(<"${TMP_PATH}/resp")"
       [ -z "${NAME}" ] && continue
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Synoinfo entries")" \
-        --inputbox "$(sprintf "$(TEXT "Type a value of '${NAME}' entry")" "${NAME}")" 0 0 "${SYNOINFO[${NAME}]}" \
+        --inputbox "$(printf "$(TEXT "Type a value of '${NAME}' entry")" "${NAME}")" 0 0 "${SYNOINFO[${NAME}]}" \
         2>${TMP_PATH}/resp
       [ $? -ne 0 ] && continue
       VALUE="$(<"${TMP_PATH}/resp")"
@@ -525,7 +525,7 @@ function extractDsmFiles() {
   if [ -f "${PAT_PATH}" ]; then
     echo "${PAT_FILE} cached."
   else
-    echo "$(sprintf "$(TEXT "Downloading %s")" "${PAT_FILE}")"
+    echo "$(printf "$(TEXT "Downloading %s")" "${PAT_FILE}")"
     # Discover remote file size
     FILESIZE=$(curl --insecure -sLI "${PAT_URL}" | grep -i Content-Length | awk '{print$2}')
     if [ 0${FILESIZE} -ge ${SPACELEFT} ]; then
@@ -682,7 +682,7 @@ function make() {
     [ -z "${ADDON}" ] && continue
     if ! checkAddonExist "${ADDON}" "${PLATFORM}" "${KVER}"; then
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Error")" --aspect 18 \
-        --msgbox "$(sprintf "$(TEXT "Addon %s not found!")" "${ADDON}")" 0 0
+        --msgbox "$(printf "$(TEXT "Addon %s not found!")" "${ADDON}")" 0 0
       return 1
     fi
   done < <(readConfigMap "addons" "${USER_CONFIG_FILE}")
@@ -814,7 +814,7 @@ function tryRecoveryDSM() {
           if [ -n "${BUILD}" ]; then
             cp "${DSMROOT_PATH}/.syno/patch/zImage" "${SLPART_PATH}"
             cp "${DSMROOT_PATH}/.syno/patch/rd.gz" "${SLPART_PATH}"
-            MSG=$(sprintf "$(TEXT "Found a installation:\n%s: \n%s:")" "${MODEL}" "${BUILD}")
+            MSG=$(printf "$(TEXT "Found a installation:\n%s: \n%s:")" "${MODEL}" "${BUILD}")
             SN=$(_get_conf_kv SN "${DSMROOT_PATH}/etc/synoinfo.conf")
             if [ -n "${SN}" ]; then
               writeConfigKey "sn" "${SN}" "${USER_CONFIG_FILE}"
@@ -1019,7 +1019,7 @@ function updateMenu() {
       fi
       if [ "${ACTUALVERSION}" = "${TAG}" ]; then
         dialog --backtitle "$(backtitle)" --title "Update arpl" --aspect 18 \
-          --yesno "$(sprintf "$(TEXT "No new version. Actual version is %s\nForce update?")" "${ACTUALVERSION}")" 0 0
+          --yesno "$(printf "$(TEXT "No new version. Actual version is %s\nForce update?")" "${ACTUALVERSION}")" 0 0
         [ $? -ne 0 ] && continue
       fi
       dialog --backtitle "$(backtitle)" --title "Update arpl" --aspect 18 \
@@ -1063,7 +1063,7 @@ function updateMenu() {
         fi
       done < <(readConfigMap "replace" "/tmp/update-list.yml")
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update arpl")" --aspect 18 \
-        --yesno "$(sprintf "$(TEXT "Arpl updated with success to %s!\nReboot?")" "${TAG}")" 0 0
+        --yesno "$(printf "$(TEXT "Arpl updated with success to %s!\nReboot?")" "${TAG}")" 0 0
       [ $? -ne 0 ] && continue
       arpl-reboot.sh config
       exit
@@ -1262,4 +1262,4 @@ while true; do
   esac
 done
 clear
-echo -e "$(sprintf "$(TEXT "Call %s to return to menu")" "\033[1;32mmenu.sh\033[0m")"
+echo -e "$(printf "$(TEXT "Call %s to return to menu")" "\033[1;32mmenu.sh\033[0m")"
