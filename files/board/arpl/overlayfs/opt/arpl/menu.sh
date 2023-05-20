@@ -974,6 +974,7 @@ function languageMenu() {
   choice=$("${cmd[@]}" "${ITEMS[@]}" 2>&1 >/dev/tty)
 
   [[ $choice == "" ]] && return
+  choice=$(($choice - 1))
   export LANGUAGE="${ITEMS_KEY[$choice]%%_*}"
   export LC_ALL="${ITEMS_KEY[$choice]}.UTF-8"
   echo ${LC_ALL} >${BOOTLOADER_PATH}/.locale
