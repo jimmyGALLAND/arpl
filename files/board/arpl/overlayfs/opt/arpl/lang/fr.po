@@ -35,11 +35,11 @@ msgstr "Montrer les modèles béta"
 
 #: menu.sh:95
 msgid "Choose the model"
-msgstr "Choisir le modèle"
+msgstr "Sélectionner le modèle"
 
 #: menu.sh:133
 msgid "Choose a build number"
-msgstr "Choisi un numéro de build"
+msgstr "Sélectionner le numéro de build"
 
 #: menu.sh:142
 msgid "Build Number"
@@ -51,7 +51,7 @@ msgstr "Reconfiguration de Synoinfo, Addons et Modules"
 
 #: menu.sh:176 menu.sh:345 menu.sh:444 menu.sh:834
 msgid "Choose a option"
-msgstr "Choisir une option"
+msgstr "Sélectionner une option"
 
 #: menu.sh:177
 msgid "Generate a random serial number"
@@ -332,7 +332,7 @@ msgstr "Modifier manuellement le fichier de configuration utilisateur"
 
 #: menu.sh:722
 msgid "Try to recovery a DSM installed system"
-msgstr "Essayez de récupérer un système installé DSM"
+msgstr "Essayez de récupérer un système DSM installé "
 
 #: menu.sh:723
 msgid "Show SATA(s)) # ports and drives"
@@ -344,7 +344,7 @@ msgstr "Avancé"
 
 #: menu.sh:727
 msgid "Choose the option"
-msgstr "Choisissez l'option"
+msgstr "Sélectionner l'option"
 
 #: menu.sh:766
 msgid "\\nTotal of ports: %s\\n"
@@ -390,7 +390,7 @@ msgstr "Désélectionner tous les modules"
 
 #: menu.sh:838
 msgid "Choose modules to include"
-msgstr "Choisir les modules à inclure"
+msgstr "Sélectionner les modules à inclure"
 
 #: menu.sh:847
 msgid "User modules"
@@ -422,11 +422,11 @@ msgstr "La configuration a changé, souhaitez-vous reconstruire le chargeur ?"
 
 #: menu.sh:939
 msgid "Choose a layout"
-msgstr "Choisissez une langue clavier"
+msgstr "Sélectionner une langue clavier"
 
 #: menu.sh:949
 msgid "Choice a keymap"
-msgstr "Choisissez une disposition clavier"
+msgstr "Sélectionner une disposition clavier"
 
 #: menu.sh:966 menu.sh:975 menu.sh:1001 menu.sh:1008 menu.sh:1012 menu.sh:1029
 msgid "Update arpl"
@@ -522,15 +522,15 @@ msgstr "Modules mis à jour avec succès !"
 
 #: menu.sh:1155
 msgid "Choose a model"
-msgstr "Choisi un modèle"
+msgstr "Sélectionner le modèle"
 
 #: menu.sh:1157
 msgid "Choose a Build Number"
-msgstr "Choisissez un numéro de build"
+msgstr "Sélectionner le numéro de build"
 
 #: menu.sh:1158
 msgid "Choose a serial number"
-msgstr "Choisissez un numéro de série"
+msgstr "Choix du numéro de série"
 
 #: menu.sh:1160
 msgid "Addons"
@@ -558,7 +558,7 @@ msgstr "Démarrez le chargeur"
 
 #: menu.sh:1174
 msgid "Choose a keymap"
-msgstr "Choisissez une configuration de clavier"
+msgstr "Sélectionner une configuration de clavier"
 
 #: menu.sh:1176
 msgid "Clean disk cache"
@@ -566,7 +566,7 @@ msgstr "Nettoyer le cache disque"
 
 #: menu.sh:1178
 msgid "Update menu"
-msgstr "Menu mises à jour"
+msgstr "Menu des mises à jour"
 
 #: menu.sh:1203
 msgid "Call %s to return to menu"

@@ -22,7 +22,7 @@ export DSMROOT_PATH="/mnt/dsmroot"
 export PATH="${PATH}:/opt/arpl"
 
 if [ -f ${BOOTLOADER_PATH}/.locale ]; then
-  export LANG="$(cat ${BOOTLOADER_PATH}/.locale)"
+  export LC_ALL="$(cat ${BOOTLOADER_PATH}/.locale)"
 fi
 
 if [ -d /opt/arpl/lang ]; then

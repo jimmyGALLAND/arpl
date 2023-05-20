@@ -222,7 +222,7 @@ function addonMenu() {
   # Loop menu
   while true; do
     dialog --backtitle "$(backtitle)" --default-item ${NEXT} \
-      --menu "$(TEXT"Choose a option")" 0 0 0 \
+      --menu "$(TEXT "Choose a option")" 0 0 0 \
       a "$(TEXT "Add an addon")" \
       d "$(TEXT "Delete addon(s)")" \
       s "$(TEXT "Show user addons")" \
@@ -954,15 +954,29 @@ function boot() {
 ###############################################################################
 # Shows language to user choose one
 function languageMenu() {
-  ITEMS="$(ls /usr/share/locale)"
-  dialog --backtitle "$(backtitle)" --default-item "${LAYOUT}" --no-items \
-    --menu "$(TEXT "Choose a language")" 0 0 0 ${ITEMS} 2>${TMP_PATH}/resp
-  [ $? -ne 0 ] && return
-  resp=$(cat /tmp/resp 2>/dev/null)
-  [ -z "${resp}" ] && return
-  LANGUAGE=${resp}
-  echo "${LANGUAGE}.UTF-8" >${BOOTLOADER_PATH}/.locale
-  export LANG="${LANGUAGE}.UTF-8"
+
+  unset ITEMS
+  unset ITEMS_KEY
+  declare -a ITEMS_KEY
+
+  COUNT=0
+  INDEX_DEFAULT=0
+
+  for i in "${!available_locales[@]}"; do
+    COUNT=$((COUNT + 1))
+    ITEMS=("${ITEMS[@]}" ${COUNT} "${available_locales[$i]}")
+    ITEMS_KEY=("${ITEMS_KEY[@]}" "$i")
+    [ "${LC_ALL%.UTF-8}" = "$i" ] && INDEX_DEFAULT=${COUNT}
+  done
+
+  cmd=(dialog --backtitle "$(backtitle)" --default-item "${INDEX_DEFAULT}"
+  --menu "$(TEXT "Choose a language")" 0 0 0)
+  choice=$("${cmd[@]}" "${ITEMS[@]}" 2>&1 >/dev/tty)
+
+  [[ $choice == "" ]] && return
+  export LANGUAGE="${ITEMS_KEY[$choice]%%_*}"
+  export LC_ALL="${ITEMS_KEY[$choice]}.UTF-8"
+  echo ${LC_ALL} >${BOOTLOADER_PATH}/.locale
 }
 
 ###############################################################################
@@ -998,7 +1012,7 @@ function updateMenu() {
   PLATFORM="$(readModelKey "${MODEL}" "platform")"
   KVER="$(readModelKey "${MODEL}" "builds.${BUILD}.kver")"
   while true; do
-    dialog --backtitle "$(backtitle)" --menu "Choose a option" 0 0 0 \
+    dialog --backtitle "$(backtitle)" --menu "$(TEXT "Choose a option")" 0 0 0 \
       a "$(TEXT "Update arpl")" \
       d "$(TEXT "Update addons")" \
       l "$(TEXT "Update LKMs")" \
