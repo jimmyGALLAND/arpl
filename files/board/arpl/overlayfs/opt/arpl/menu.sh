@@ -1229,7 +1229,7 @@ while true; do
   echo -e "p \"$(TEXT "Update menu") $(carArrow)\"" >>"${TMP_PATH}/menu"
   echo "e \"$(TEXT "Exit")\"" >>"${TMP_PATH}/menu"
 
-  dialog --default-item ${NEXT} --backtitle "$(backtitle)" --colors \
+  dialog --default-item ${NEXT} --backtitle "$(backtitle)" --no-cancel --colors \
     --menu "$(TEXT "Choose the option")" 0 0 0 --file "${TMP_PATH}/menu" \
     2>${TMP_PATH}/resp
   [ $? -ne 0 ] && break
