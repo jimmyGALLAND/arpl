@@ -964,7 +964,7 @@ function languageMenu() {
 
   for i in "${!available_locales[@]}"; do
     COUNT=$((COUNT + 1))
-    ITEMS=("${ITEMS[@]}" ${COUNT} "${available_locales[$i]}")
+    ITEMS=("${ITEMS[@]}" ${COUNT} "${available_locales[$i]//\"/}")
     ITEMS_KEY=("${ITEMS_KEY[@]}" "$i")
     [ "${LC_ALL%.UTF-8}" = "$i" ] && INDEX_DEFAULT=${COUNT}
   done
@@ -972,10 +972,9 @@ function languageMenu() {
   cmd=(dialog --backtitle "$(backtitle)" --default-item "${INDEX_DEFAULT}"
   --menu "$(TEXT "Choose a language")" 0 0 0)
   choice=$("${cmd[@]}" "${ITEMS[@]}" 2>&1 >/dev/tty)
-
-  [[ $choice == "" ]] && return
+  [[ $? -ne 0 ]] && return
   choice=$(($choice - 1))
-  export LANGUAGE="${ITEMS_KEY[$choice]%%_*}"
+  export LANGUAGE="${ITEMS_KEY[$choice]}"
   export LC_ALL="${ITEMS_KEY[$choice]}.UTF-8"
   echo ${LC_ALL} >${BOOTLOADER_PATH}/.locale
 }
