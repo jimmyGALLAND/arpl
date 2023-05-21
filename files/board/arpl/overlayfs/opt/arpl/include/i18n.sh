@@ -8,7 +8,7 @@ declare -A available_locales
 export available_locales
 for code_lang in "${codes_lang[@]}"; do
   code_lang_reduce=${code_lang%%_*}
-  available_locales["${code_lang}"]=$(jq ".${code_lang_reduce}.name" "${INCLUDE_PATH}/include/iso_639-1.json")
+  available_locales["${code_lang}"]=$(jq ".${code_lang_reduce}.name" "${INCLUDE_PATH}/iso_639-1.json")
 done
 
 alias TEXT='gettext "arpl"'
