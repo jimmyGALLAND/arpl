@@ -223,10 +223,10 @@ function addonMenu() {
   while true; do
     dialog --backtitle "$(backtitle)" --default-item ${NEXT} \
       --menu "$(TEXT "Choose a option")" 0 0 0 \
-      a "$(TEXT "Add an addon")" \
+      a "$(TEXT "Add an addon") $(echo -e $(carArrow))" \
       d "$(TEXT "Delete addon(s)")" \
-      s "$(TEXT "Show user addons")" \
-      m "$(TEXT "Show all available addons")" \
+      s "$(TEXT "Show user addons") $(echo -e $(carArrow))" \
+      m "$(TEXT "Show all available addons") $(echo -e $(carArrow))" \
       o "$(TEXT "Download a external addon")" \
       e "$(TEXT "Exit")" \
       2>${TMP_PATH}/resp
@@ -720,7 +720,7 @@ function advancedMenu() {
     rm "${TMP_PATH}/menu"
     if [ -n "${BUILD}" ]; then
       echo "l \"$(TEXT "Switch LKM version"): \Z4${LKM}\Zn\"" >>"${TMP_PATH}/menu"
-      echo "o \"$(TEXT "Modules")\"" >>"${TMP_PATH}/menu"
+      echo "o \"$(TEXT "Modules") $(carArrow)\"" >>"${TMP_PATH}/menu"
     fi
     if loaderIsConfigured; then
       echo "r \"$(TEXT "Switch direct boot"): \Z4${DIRECTBOOT}\Zn\"" >>"${TMP_PATH}/menu"
@@ -848,10 +848,10 @@ function selectModules() {
   # menu loop
   while true; do
     dialog --backtitle "$(backtitle)" --menu "$(TEXT "Choose a option")" 0 0 0 \
-      s "$(TEXT "Show selected modules")" \
+      s "$(TEXT "Show selected modules") $(echo -e $(carArrow))" \
       a "$(TEXT "Select all modules")" \
       d "$(TEXT "Deselect all modules")" \
-      c "$(TEXT "Choose modules to include")" \
+      c "$(TEXT "Choose modules to include") $(echo -e $(carArrow))" \
       e "$(TEXT "Exit")" \
       2>${TMP_PATH}/resp
     [ $? -ne 0 ] && break
@@ -1203,17 +1203,17 @@ fi
 # Main loop
 NEXT="m"
 while true; do
-  echo "m \"$(TEXT "Choose a model")\"" >"${TMP_PATH}/menu"
+  echo -e "m \"$(TEXT "Choose a model") $(carArrow)\"" >"${TMP_PATH}/menu"
   if [ -n "${MODEL}" ]; then
-    echo "n \"$(TEXT "Choose a Build Number")\"" >>"${TMP_PATH}/menu"
+    echo -e "n \"$(TEXT "Choose a Build Number") $(carArrow)\"" >>"${TMP_PATH}/menu"
     echo "s \"$(TEXT "Choose a serial number")\"" >>"${TMP_PATH}/menu"
     if [ -n "${BUILD}" ]; then
-      echo "a \"$(TEXT "Addons")\"" >>"${TMP_PATH}/menu"
-      echo "x \"$(TEXT "Cmdline menu")\"" >>"${TMP_PATH}/menu"
-      echo "i \"$(TEXT "Synoinfo menu")\"" >>"${TMP_PATH}/menu"
+      echo -e "a \"$(TEXT "Addons") $(carArrow)\"" >>"${TMP_PATH}/menu"
+      echo -e "x \"$(TEXT "Cmdline menu") $(carArrow)\"" >>"${TMP_PATH}/menu"
+      echo -e "i \"$(TEXT "Synoinfo menu") $(carArrow)\"" >>"${TMP_PATH}/menu"
     fi
   fi
-  echo "v \"$(TEXT "Advanced menu")\"" >>"${TMP_PATH}/menu"
+  echo -e "v \"$(TEXT "Advanced menu") $(carArrow)\"" >>"${TMP_PATH}/menu"
   if [ -n "${MODEL}" ]; then
     if [ -n "${BUILD}" ]; then
       echo "d \"$(TEXT "Build the loader")\"" >>"${TMP_PATH}/menu"
@@ -1222,16 +1222,16 @@ while true; do
   if loaderIsConfigured; then
     echo "b \"$(TEXT "Boot the loader")\" " >>"${TMP_PATH}/menu"
   fi
-  echo "l \"$(TEXT "Choose a language")\"" >>"${TMP_PATH}/menu"
-  echo "k \"$(TEXT "Choose a keymap")\" " >>"${TMP_PATH}/menu"
+  echo -e "l \"$(TEXT "Choose a language") $(carArrow)\"" >>"${TMP_PATH}/menu"
+  echo -e "k \"$(TEXT "Choose a keymap") $(carArrow)\"" >>"${TMP_PATH}/menu"
   if [ ${CLEARCACHE} -eq 1 -a -d "${CACHE_PATH}/dl" ]; then
     echo "c \"$(TEXT "Clean disk cache")\"" >>"${TMP_PATH}/menu"
   fi
-  echo "p \"$(TEXT "Update menu")\"" >>"${TMP_PATH}/menu"
+  echo -e "p \"$(TEXT "Update menu") $(carArrow)\"" >>"${TMP_PATH}/menu"
   echo "e \"$(TEXT "Exit")\"" >>"${TMP_PATH}/menu"
 
   dialog --default-item ${NEXT} --backtitle "$(backtitle)" --colors \
-    --menu "Choose the option" 0 0 0 --file "${TMP_PATH}/menu" \
+    --menu "$(TEXT "Choose the option")" 0 0 0 --file "${TMP_PATH}/menu" \
     2>${TMP_PATH}/resp
   [ $? -ne 0 ] && break
   case $(<"${TMP_PATH}/resp") in
