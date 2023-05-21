@@ -187,7 +187,7 @@ for N in $(seq 0 $(expr ${#ETHX[@]} - 1)); do
     COUNT=$((${COUNT} + 1))
     IP=$(ip route show dev ${ETHX[${N}]} 2>/dev/null | sed -n 's/.* via .* src \(.*\)  metric .*/\1/p')
     if [ -n "${IP}" ]; then
-      echo -en "\r${ETHX[${N}]}: $(printf "$(TEXT "Access \033[1;34mhttp://%s:7681\033[0m to configure the loader via web terminal.")" "${IP}")\n"
+      echo -en "\r${ETHX[${N}]}: $(printf "$(TEXT "Access \033[1;34mhttp://%s\033[0m to configure the loader via web terminal.")" "${IP}")\n"
       break
     fi
     echo -n "."
@@ -200,7 +200,7 @@ echo
 echo -e "$(TEXT "Call \033[1;32mmenu.sh\033[0m to configure loader")"
 echo
 echo -e "$(TEXT "User config is on") \033[1;32m${USER_CONFIG_FILE}\033[0m"
-echo -e "$(TEXT "Default SSH Root password is") \033[1;31mRedp1lL-1s-4weSomE\033[0m"
+echo -e "$(TEXT "Default SSH Root password is") \033[1;31mrp\033[0m"
 echo
 
 # Check memory
