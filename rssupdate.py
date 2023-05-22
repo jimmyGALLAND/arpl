@@ -123,19 +123,20 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
 
     print(models)
     
+
+    pats = {}
+    
     # Get beta pats
     #Contre-mesures temporaires, RC 64551 n'est pas actuellement en ligne sur archive.synology.com, la version bêta est 64216, utilisez temporairement l'adresse 64216 pour la remplacer.
 
-
-    pats = {}
-    req = requests.get('https://prerelease.synology.com/webapi/models?event=dsm72_beta', headers=headers)
-    rels = json.loads(req.text)
-    if "models" in rels and len(rels["models"]) > 0:
-        for i in rels["models"]:
-            if "name" not in i or "dsm" not in i: continue
-            if i["name"] not in models: continue
-            if i["name"] not in pats.keys(): pats[i["name"]]={}
-            pats[i["name"]][fullversion(i["dsm"]["version"]).replace('64216','64551')] = i["dsm"]["url"].split('?')[0].replace('beta','release').replace('64216','64551')
+#   req = requests.get('https://prerelease.synology.com/webapi/models?event=dsm72_beta', headers=headers)
+#    rels = json.loads(req.text)
+#    if "models" in rels and len(rels["models"]) > 0:
+#        for i in rels["models"]:
+#            if "name" not in i or "dsm" not in i: continue
+#            if i["name"] not in models: continue
+#            if i["name"] not in pats.keys(): pats[i["name"]]={}
+#            pats[i["name"]][fullversion(i["dsm"]["version"]).replace('64216','64551')] = i["dsm"]["url"].split('?')[0].replace('beta','release').replace('64216','64551')
 
     req = requests.get('https://archive.synology.com/download/Os/DSM', headers=headers)
     req.encoding = 'utf-8'
