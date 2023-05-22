@@ -1,5 +1,5 @@
 ARPL_VERSION="1.2.2"
-ARPL_TITLE="ARPL ${ARPL_VERSION}"
+ARPL_TITLE="ARPL v ${ARPL_VERSION} - github.com/jimmyGALLAND/arpl"
 
 # Define paths
 TMP_PATH="/tmp"

@@ -1,5 +1,6 @@
 # Automated Redpill Loader
 
+[Français](./README-Fr.md)
 [中文说明](./README-Zh.md)
 
 This particular project was created to facilitate my testing with Redpill and I decided to share it with other users.
@@ -10,13 +11,13 @@ I tried to make the system as user-friendly as possible, to make life easier. Th
 
 # Important considerations
 
- - Some users have experienced an excessively long time to boot. In this case is highly recommended to use an SSD for the loader in the case of the option via DoM or a fast USB flash drive;
+- Some users have experienced an excessively long time to boot. In this case is highly recommended to use an SSD for the loader in the case of the option via DoM or a fast USB flash drive;
 
- - You must have at least 4GB of RAM, both in baremetal and VMs;
+- You must have at least 4GB of RAM, both in baremetal and VMs;
 
- - The DSM kernel is compatible with SATA ports, not SAS/SCSI/etc. For device-tree models only SATA ports work. For the other models, another type of disks may work;
+- The DSM kernel is compatible with SATA ports, not SAS/SCSI/etc. For device-tree models only SATA ports work. For the other models, another type of disks may work;
 
- - It is possible to use HBA cards, however SMART and serial numbers are only functional on DS3615xs, DS3617xs and DS3622xs+ models.
+- It is possible to use HBA cards, however SMART and serial numbers are only functional on DS3615xs, DS3617xs and DS3622xs+ models.
 
 # Use
 
@@ -34,11 +35,11 @@ Call the "menu.sh" command from the computer itself.
 
 ### Via web
 
-From another machine into same network, type the address provided on the screen `http://<ip>:7681` in browser.
+From another machine into same network, type the address provided on the screen `http://<ip>` in browser.
 
 ### Via ssh
 
-From another machine into same network, use a ssh client, username `root` and password `Redp1lL-1s-4weSomE`
+From another machine into same network, use a ssh client, username `root` and password `rp`
 
 ## Using loader
 
@@ -94,6 +95,6 @@ Please search the forums at https://xpenology.com/forum if your question/problem
 
 # Thanks
 
-All code was based on the work of TTG, pocopico, jumkey and others involved in continuing TTG's original redpill-load project.
+All code was based on the work of Kiler129, TTG, pocopico, jumkey and others involved in continuing TTG's original redpill-load project.
 
 More information will be added in the future.

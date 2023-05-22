@@ -9,8 +9,8 @@ name: Build arpl
 
 on:
   push:
-    branches:
-      - main
+    #    branches:
+    #  - main
     tags:
       - v*
 
@@ -116,13 +116,13 @@ jobs:
             sed 's/^ARPL_VERSION=.*/ARPL_VERSION="'${VERSION}'"/' -i files/board/arpl/overlayfs/opt/arpl/include/consts.sh
             echo `git show-ref`
             #git checkout main
-            #git pull
-            #status=$(git status -s | awk '{printf " %s", $2}')
-            #if [ -n "${status}" ]; then
-            #  git add ${status}
-            #  git commit -m "update $(date +%Y-%m-%d" "%H:%M:%S)"
-            #  git push -f
-            #fi
+            git pull
+            status=$(git status -s | awk '{printf " %s", $2}')
+            if [ -n "${status}" ]; then
+              git add ${status}
+              git commit -m "update $(date +%Y-%m-%d" "%H:%M:%S)"
+              git push -f
+            fi
           fi
 
       # Convert po2mo, Get extractor, LKM, addons and Modules
