@@ -6,77 +6,17 @@
     <pubDate>Tue May 9 11:52:15 CST 2023</pubDate>
     <copyright>Copyright 2023 Synology Inc</copyright>
     <item>
-      <title>DSM 7.2-64551</title>
+      <title>DSM 7.2-64561</title>
       <MajorVer>7</MajorVer>
       <MinorVer>2</MinorVer>
-      <BuildPhase>RC</BuildPhase>
-      <BuildNum>64551</BuildNum>
-      <BuildDate>2023/04/28</BuildDate>
+      <BuildPhase>GM</BuildPhase>
+      <BuildNum>64561</BuildNum>
+      <BuildDate>2023/05/20</BuildDate>
       <ReqMajorVer>7</ReqMajorVer>
       <ReqMinorVer>0</ReqMinorVer>
       <ReqBuildPhase>0</ReqBuildPhase>
       <ReqBuildNum>63134</ReqBuildNum>
       <ReqBuildDate>2023/01/18</ReqBuildDate>
-      <model>
-        <mUnique>synology_broadwell_3617xs</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS3617xs_64551.pat</mLink>
-        <mCheckSum>3ba13be674c7e51114ffb91484e60259</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_v1000_1621+</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS1621%2B_64551.pat</mLink>
-        <mCheckSum>3d5bf1cb0aa4e03f86484b9e85507856</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_denverton_dva3221</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DVA3221_64551.pat</mLink>
-        <mCheckSum>e4c26b46614ce2d9af7a77e6208099d8</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_v1000_fs2500</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_FS2500_64551.pat</mLink>
-        <mCheckSum>733dfc6b5789e557aa60a0809fe392e5</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_geminilake_1520+</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS1520%2B_64551.pat</mLink>
-        <mCheckSum>8b6c0847c559b27c71877f32d5577c84</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_broadwellnk_rs4021xs+</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_RS4021xs%2B_64551.pat</mLink>
-        <mCheckSum>38211feda8b3912e1c48c17ed2d46aed</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_v1000_2422+</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS2422%2B_64551.pat</mLink>
-        <mCheckSum>fa51e7e371a87b9408822aee903dd870</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_apollolake_918+</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS918%2B_64551.pat</mLink>
-        <mCheckSum>ddfdf8f2ca5a40edd46803f5ca982264</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_geminilake_920+</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS920%2B_64551.pat</mLink>
-        <mCheckSum>9699adeaef01f3333e8f5f84cc557ddb</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_epyc7002_sa6400</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_SA6400_64551.pat</mLink>
-        <mCheckSum>ef8ebe0f0f8734026c300515fd8a69ed</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_r1000_923+</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS923%2B_64551.pat</mLink>
-        <mCheckSum>fd5e8cf659b0fc7c9d74f17aa772eb48</mCheckSum>
-      </model>
-      <model>
-        <mUnique>synology_broadwellnk_3622xs+</mUnique>
-        <mLink>https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS3622xs%2B_64551.pat</mLink>
-        <mCheckSum>403a3020614752615c62f251cf23f94e</mCheckSum>
-      </model>
     </item>
     <item>
       <title>DSM 7.1.1-42962</title>
