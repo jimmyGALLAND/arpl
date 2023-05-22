@@ -89,7 +89,7 @@ builds:
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-42951-post-init-script.patch"
 
-  64551:
+  64561:
     ver: "7.2"
     kver: "4.4.302"
     rd-compressed: false
@@ -98,14 +98,14 @@ builds:
     synoinfo:
       <<: *synoinfo
     pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.2/64551/DSM_DS1520%2B_64551.pat"
+      url: "https://global.synologydownload.com/download/DSM/release/7.2/64561/DSM_DS1520%2B_64561.pat"
       hash: "f42ca1bd75e88154623dba5dbbd08bcf8a00936ab178885b24d4d8429b6fb0a4"
       ramdisk-hash: "649d303414e217852fa8bfff16421adfe3efcfa03493db2c1efb014fb3c09308"
       zimage-hash: "8cbe286e7b8085ca579695505311ba7265e018a7b4417ec33484fc8df13d2ec3"
       md5-hash: "8b6c0847c559b27c71877f32d5577c84"
 
     patch:
-      - "ramdisk-64551-disable-root-pwd.patch"
-      - "ramdisk-64551-init-script.patch"
+      - "ramdisk-64561-disable-root-pwd.patch"
+      - "ramdisk-64561-init-script.patch"
       - "ramdisk-common-etc-rc.patch"
-      - "ramdisk-64551-post-init-script.patch"
+      - "ramdisk-64561-post-init-script.patch"
