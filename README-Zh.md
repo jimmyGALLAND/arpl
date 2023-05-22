@@ -1,7 +1,7 @@
 # 自动 Redpill 装载程序
 
-[English](./README.md)
-[Français](./README-Fr.md)
+[[English](./README.md)]
+[[Français](./README-Fr.md)]
 
 这个特别的项目是为了方便我用 Redpill 进行测试而创建的，我决定与其他用户分享它。
 

@@ -1,7 +1,8 @@
 # Chargeur Redpill automatisé
 
-[English](./README.md)
-[中文说明](./README-Zh.md)
+[[English](./README.md)]
+
+[[中文说明](./README-Zh.md)]
 
 Ce projet particulier a été créé pour faciliter mes tests avec Redpill et j'ai décidé de le partager avec d'autres utilisateurs.
 
