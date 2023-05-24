@@ -41,6 +41,49 @@ jobs:
           sudo apt install -y jq gettext libelf-dev qemu-utils
           sudo snap install yq
           
+      # calculates the version number and push
+      - name: Calculate version
+        run: |
+          # Calculate version
+          VERSION=""
+          if [[ "${{ github.event_name }}" =~ ^(push|release)$ && "${{ github.ref_type }}" == 'tag' ]]; then
+            VERSION="${{ github.ref_name }}"
+          elif [ -n "${{ inputs.version }}" ]; then
+            if [ "`echo ${{ inputs.version }} | cut -d '.' -f 1,2`" = "`date +'%y.%-m'`" ]; then
+              VERSION="${{ inputs.version }}"
+            else
+              LATEST_TAG="`curl -skL "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r ".tag_name" 2>/dev/null`"
+              if [ -n "${LATEST_TAG}" -a "`echo ${LATEST_TAG} | cut -d '.' -f 1,2`" = "`date +'%y.%-m'`" ]; then  # format %y.%-m.$i
+                VERSION="`echo ${LATEST_TAG} | awk -F '.' '{$3=$3+1}1' OFS='.'`"
+              else
+                VERSION="`date +'%y.%-m'`.0"
+              fi
+            fi
+          else
+            VERSION=""
+          fi
+
+          echo "VERSION: ${VERSION}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+          if [ -n "${VERSION}" ]; then
+            # Modify Source File
+            echo "${VERSION}" > VERSION
+            echo "${VERSION}" > files/board/arpl/p1/ARPL-VERSION
+            sed 's/^ARPL_VERSION=.*/ARPL_VERSION="'${VERSION}'"/' -i files/board/arpl/overlayfs/opt/arpl/include/consts.sh
+            git checkout main
+            git pull
+            status=$(git status -s | awk '{printf " %s", $2}')
+            if [ -n "${status}" ]; then
+              echo 'git add'
+              git add ${status}
+              echo "git commit"
+              git commit -m "update $(date +%Y-%m-%d" "%H:%M:%S)"
+              echo "git push"
+              git push -f
+            fi
+          fi
+
       # Check dl cache
       - name: Cache downloads
         id: dl-cache
@@ -83,47 +126,6 @@ jobs:
           echo "First make"
           cd .buildroot
           make BR2_EXTERNAL=../external
-
-      # calculates the version number and push
-      - name: Calculate version
-        run: |
-          # Calculate version
-          VERSION=""
-          if [[ "${{ github.event_name }}" =~ ^(push|release)$ && "${{ github.ref_type }}" == 'tag' ]]; then
-            VERSION="${{ github.ref_name }}"
-          elif [ -n "${{ inputs.version }}" ]; then
-            if [ "`echo ${{ inputs.version }} | cut -d '.' -f 1,2`" = "`date +'%y.%-m'`" ]; then
-              VERSION="${{ inputs.version }}"
-            else
-              LATEST_TAG="`curl -skL "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r ".tag_name" 2>/dev/null`"
-              if [ -n "${LATEST_TAG}" -a "`echo ${LATEST_TAG} | cut -d '.' -f 1,2`" = "`date +'%y.%-m'`" ]; then  # format %y.%-m.$i
-                VERSION="`echo ${LATEST_TAG} | awk -F '.' '{$3=$3+1}1' OFS='.'`"
-              else
-                VERSION="`date +'%y.%-m'`.0"
-              fi
-            fi
-          else
-            VERSION=""
-          fi
-
-          echo "VERSION: ${VERSION}"
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
-
-          if [ -n "${VERSION}" ]; then
-            # Modify Source File
-            echo "${VERSION}" > VERSION
-            echo "${VERSION}" > files/board/arpl/p1/ARPL-VERSION
-            sed 's/^ARPL_VERSION=.*/ARPL_VERSION="'${VERSION}'"/' -i files/board/arpl/overlayfs/opt/arpl/include/consts.sh
-            echo `git show-ref`
-            #git checkout main
-            git pull
-            status=$(git status -s | awk '{printf " %s", $2}')
-            if [ -n "${status}" ]; then
-              git add ${status}
-              git commit -m "update $(date +%Y-%m-%d" "%H:%M:%S)"
-              git push -f
-            fi
-          fi
 
       # Convert po2mo, Get extractor, LKM, addons and Modules
       - name: Convert po2mo, Get extractor, LKM, addons and Modules

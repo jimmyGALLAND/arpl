@@ -7,9 +7,9 @@ synoinfo: &synoinfo
   support_leds_lp3943: ""
   support_bde_internal_10g: "no"
   buzzeroffen: "0xffff"
-  rss_server: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.xml"
-  rss_server_ssl: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.xml"
-  rss_server_v2: "https://raw.githubusercontent.com/fbelavenuto/arpl/main/rss.json"
+  rss_server: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
+  rss_server_ssl: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
+  rss_server_v2: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.json"
   #support_ssd_cache: "yes"
   support_syno_hybrid_raid:
   supportraidgroup:
