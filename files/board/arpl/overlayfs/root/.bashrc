@@ -23,6 +23,8 @@ export PATH="${PATH}:/opt/arpl"
 
 if [ -f ${BOOTLOADER_PATH}/.locale ]; then
   export LC_ALL="$(cat ${BOOTLOADER_PATH}/.locale)"
+else
+  export LC_ALL="en_US.UTF-8"
 fi
 
 if [ -d /opt/arpl/lang ]; then

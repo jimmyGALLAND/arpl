@@ -9,6 +9,7 @@ synoinfo: &synoinfo
   support_bde_internal_10g: "no"
   support_syno_hybrid_raid:
   supportraidgroup:
+  esataportcfg: "0x00"
 cmdline: &cmdline
   intel_iommu: "igfx_off"
   HddEnableDynamicPower: 1

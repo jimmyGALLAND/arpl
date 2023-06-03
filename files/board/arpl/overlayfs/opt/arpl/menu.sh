@@ -311,7 +311,7 @@ function addonMenu() {
       [ -z "${URL}" ] && continue
       clear
       echo "$(TEXT "Downloading") ${URL}"
-      STATUS=$(curl --insecure -w "%{http_code}" -L "${URL}" -o "${TMP_PATH}/addon.tgz" --progress-bar)
+      STATUS=$(curl -k -w "%{http_code}" -L "${URL}" -o "${TMP_PATH}/addon.tgz" --progress-bar)
       if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
         dialog --backtitle "$(backtitle)" --title "Error downloading" --aspect 18 \
           --msgbox "$(TEXT "Check internet, URL or cache disk space")" 0 0
@@ -525,14 +525,27 @@ function extractDsmFiles() {
   if [ -f "${PAT_PATH}" ]; then
     echo "${PAT_FILE} cached."
   else
+
+    speed_a="`curl -Lo /dev/null -skw "%{speed_download}" "global.synologydownload.com"`"
+    speed_b="`curl -Lo /dev/null -skw "%{speed_download}" "global.download.synology.com"`"
+    speed_c="`curl -Lo /dev/null -skw "%{speed_download}" "cndl.synology.cn"`"
+    fastest="`echo -e "global.synologydownload.com ${speed_a}\nglobal.download.synology.com ${speed_b}\ncndl.synology.cn ${speed_c}" | sort -k2rn | head -1 | awk '{print $1}'`"
+
+    mirror="`echo ${PAT_URL} | sed 's|^http[s]*://\([^/]*\).*|\1|'`"
+    if [ "${mirror}" != "${fastest}" ]; then
+      echo "`printf "$(TEXT "Based on the current network situation, switch to %s mirror to downloading.")" "${fastest}"`"
+      PAT_URL="`echo ${PAT_URL} | sed "s/${mirror}/${fastest}/"`"
+      OLDPAT_URL="https://${fastest}/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat"
+    fi
+
     echo "$(printf "$(TEXT "Downloading %s")" "${PAT_FILE}")"
     # Discover remote file size
-    FILESIZE=$(curl --insecure -sLI "${PAT_URL}" | grep -i Content-Length | awk '{print$2}')
+    FILESIZE=$(curl -k -sLI "${PAT_URL}" | grep -i Content-Length | awk '{print$2}')
     if [ 0${FILESIZE} -ge ${SPACELEFT} ]; then
       # No disk space to download, change it to RAMDISK
       PAT_PATH="${TMP_PATH}/${PAT_FILE}"
     fi
-    STATUS=$(curl --insecure -w "%{http_code}" -L "${PAT_URL}" -o "${PAT_PATH}" --progress-bar)
+    STATUS=$(curl -k -w "%{http_code}" -L "${PAT_URL}" -o "${PAT_PATH}" --progress-bar)
     if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
       rm "${PAT_PATH}"
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Error downloading")" --aspect 18 \
@@ -590,12 +603,12 @@ function extractDsmFiles() {
       if [ ! -f "${OLDPAT_PATH}" ]; then
         echo "$(TEXT "Downloading old pat to extract synology .pat extractor...")"
         # Discover remote file size
-        FILESIZE=$(curl --insecure -sLI "${OLDPAT_URL}" | grep -i Content-Length | awk '{print$2}')
+        FILESIZE=$(curl -k -sLI "${OLDPAT_URL}" | grep -i Content-Length | awk '{print$2}')
         if [ 0${FILESIZE} -ge ${SPACELEFT} ]; then
           # No disk space to download, change it to RAMDISK
           OLDPAT_PATH="${TMP_PATH}/DS3622xs+-42218.pat"
         fi
-        STATUS=$(curl --insecure -w "%{http_code}" -L "${OLDPAT_URL}" -o "${OLDPAT_PATH}" --progress-bar)
+        STATUS=$(curl -k -w "%{http_code}" -L "${OLDPAT_URL}" -o "${OLDPAT_PATH}" --progress-bar)
         if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
           rm "${OLDPAT_PATH}"
           dialog --backtitle "$(backtitle)" --title "$(TEXT "Error downloading")" --aspect 18 \
@@ -1025,7 +1038,7 @@ function updateMenu() {
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update arpl")" --aspect 18 \
         --infobox "$(TEXT "Checking last version")" 0 0
       ACTUALVERSION="v${ARPL_VERSION}"
-      TAG="$(curl --insecure -s https://api.github.com/repos/jimmyGALLAND/arpl/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}')"
+      TAG="$(curl -k -s https://api.github.com/repos/jimmyGALLAND/arpl/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}')"
       if [ $? -ne 0 -o -z "${TAG}" ]; then
         dialog --backtitle "$(backtitle)" --title "Update arpl" --aspect 18 \
           --msgbox "$(TEXT "Error checking new version")" 0 0
@@ -1039,7 +1052,7 @@ function updateMenu() {
       dialog --backtitle "$(backtitle)" --title "Update arpl" --aspect 18 \
         --infobox "$(TEXT "Downloading last version") ${TAG}" 0 0
       # Download update file
-      STATUS=$(curl --insecure -w "%{http_code}" -L \
+      STATUS=$(curl -k -w "%{http_code}" -L \
         "https://github.com/jimmyGALLAND/arpl/releases/download/${TAG}/update.zip" -o /tmp/update.zip)
       if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
         dialog --backtitle "$(backtitle)" --title "Update arpl" --aspect 18 \
@@ -1070,7 +1083,7 @@ function updateMenu() {
         if [ "${KEY: -1}" = "/" ]; then
           rm -Rf "${VALUE}"
           mkdir -p "${VALUE}"
-          gzip -dc "/tmp/$(basename "${KEY}").tgz" | tar xf - -C "${VALUE}"
+          tar -zxf "/tmp/`basename "${KEY}"`.tgz" -C "${VALUE}"
         else
           mkdir -p "$(dirname "${VALUE}")"
           mv "/tmp/$(basename "${KEY}")" "${VALUE}"
@@ -1086,7 +1099,7 @@ function updateMenu() {
     d)
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update addons")" --aspect 18 \
         --infobox "$(TEXT "Checking last version")" 0 0
-      TAG=$(curl --insecure -s https://api.github.com/repos/jimmyGALLAND/arpl-addons/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}')
+      TAG=$(curl -k -s https://api.github.com/repos/jimmyGALLAND/arpl-addons/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}')
       if [ $? -ne 0 -o -z "${TAG}" ]; then
         dialog --backtitle "$(backtitle)" --title "$(TEXT "Update addons")" --aspect 18 \
           --msgbox "$(TEXT "Error checking new version")" 0 0
@@ -1094,7 +1107,7 @@ function updateMenu() {
       fi
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update addons")" --aspect 18 \
         --infobox "$(TEXT "Downloading last version")" 0 0
-      STATUS=$(curl --insecure -s -w "%{http_code}" -L "https://github.com/jimmyGALLAND/arpl-addons/releases/download/${TAG}/addons.zip" -o /tmp/addons.zip)
+      STATUS=$(curl -k -s -w "%{http_code}" -L "https://github.com/jimmyGALLAND/arpl-addons/releases/download/${TAG}/addons.zip" -o /tmp/addons.zip)
       if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
         dialog --backtitle "$(backtitle)" --title "$(TEXT "Update addons")" --aspect 18 \
           --msgbox "$(TEXT "Error downloading new version")" 0 0
@@ -1112,7 +1125,7 @@ function updateMenu() {
         ADDON=$(basename ${PKG} | sed 's|.addon||')
         rm -rf "${ADDONS_PATH}/${ADDON}"
         mkdir -p "${ADDONS_PATH}/${ADDON}"
-        tar xaf "${PKG}" -C "${ADDONS_PATH}/${ADDON}" >/dev/null 2>&1
+        tar -xaf "${PKG}" -C "${ADDONS_PATH}/${ADDON}" >/dev/null 2>&1
       done
       DIRTY=1
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update addons")" --aspect 18 \
@@ -1122,7 +1135,7 @@ function updateMenu() {
     l)
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update LKMs")" --aspect 18 \
         --infobox "$(TEXT "Checking last version")" 0 0
-      TAG=$(curl --insecure -s https://api.github.com/repos/jimmyGALLAND/redpill-lkm/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}')
+      TAG=$(curl -k -s https://api.github.com/repos/jimmyGALLAND/redpill-lkm/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}')
       if [ $? -ne 0 -o -z "${TAG}" ]; then
         dialog --backtitle "$(backtitle)" --title "$(TEXT "Update LKMs")" --aspect 18 \
           --msgbox "$(TEXT "Error checking new version")" 0 0
@@ -1130,7 +1143,7 @@ function updateMenu() {
       fi
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update LKMs")" --aspect 18 \
         --infobox "$(TEXT "Downloading last version")" 0 0
-      STATUS=$(curl --insecure -s -w "%{http_code}" -L "https://github.com/jimmyGALLAND/redpill-lkm/releases/download/${TAG}/rp-lkms.zip" -o /tmp/rp-lkms.zip)
+      STATUS=$(curl -k -s -w "%{http_code}" -L "https://github.com/jimmyGALLAND/redpill-lkm/releases/download/${TAG}/rp-lkms.zip" -o /tmp/rp-lkms.zip)
       if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
         dialog --backtitle "$(backtitle)" --title "$(TEXT "Update LKMs")" --aspect 18 \
           --msgbox "$(TEXT "Error downloading last version")" 0 0
@@ -1159,7 +1172,7 @@ function updateMenu() {
       done < <(find "${MODEL_CONFIG_PATH}" -maxdepth 1 -name \*.yml | sort)
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update Modules")" --aspect 18 \
         --infobox "$(TEXT "Checking last version")" 0 0
-      TAG=$(curl --insecure -s https://api.github.com/repos/jimmyGALLAND/arpl-modules/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}')
+      TAG=$(curl -k -s https://api.github.com/repos/jimmyGALLAND/arpl-modules/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}')
       if [ $? -ne 0 -o -z "${TAG}" ]; then
         dialog --backtitle "$(backtitle)" --title "$(TEXT "Update Modules")" --aspect 18 \
           --msgbox "$(TEXT "Error checking new version")" 0 0
@@ -1167,7 +1180,7 @@ function updateMenu() {
       fi
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update Modules")" --aspect 18 \
         --infobox "$(TEXT "Downloading modules")" 0 0
-      STATUS=$(curl --insecure -s -w "%{http_code}" -L "https://github.com/jimmyGALLAND/arpl-modules/releases/download/${TAG}/modules.zip" -o "/tmp/modules.zip")
+      STATUS=$(curl -k -s -w "%{http_code}" -L "https://github.com/jimmyGALLAND/arpl-modules/releases/download/${TAG}/modules.zip" -o "/tmp/modules.zip")
       if [ $? -ne 0 -o ${STATUS} -ne 200 ]; then
         dialog --backtitle "$(backtitle)" --title "$(TEXT "Update Modules")" --aspect 18 \
           --msgbox "$(TEXT "Error downloading ") modules.zip" 0 0

@@ -9,7 +9,7 @@ function getAllModules() {
   # Unzip modules for temporary folder
   rm -rf "${TMP_PATH}/modules"
   mkdir -p "${TMP_PATH}/modules"
-  gzip -dc "${MODULES_PATH}/${PLATFORM}-${KVER}.tgz" | tar xf - -C "${TMP_PATH}/modules"
+  tar -zxf "${MODULES_PATH}/${PLATFORM}-${KVER}.tgz" -C "${TMP_PATH}/modules"
   # Get list of all modules
   for F in `ls ${TMP_PATH}/modules/*.ko`; do
     X=`basename ${F}`
