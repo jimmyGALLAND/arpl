@@ -6,6 +6,19 @@
       <pubDate>Tue May 9 11:52:15 CST 2023</pubDate>
       <copyright>Copyright 2023 Synology Inc</copyright>
     <item>
+      <title>DSM 7.2.1-69057</title>
+      <MajorVer>7</MajorVer>
+      <MinorVer>2</MinorVer>
+      <BuildPhase>GM</BuildPhase>
+      <BuildNum>69057</BuildNum>
+      <BuildDate>2023/09/26</BuildDate>
+      <ReqMajorVer>7</ReqMajorVer>
+      <ReqMinorVer>0</ReqMinorVer>
+      <ReqBuildPhase>0</ReqBuildPhase>
+      <ReqBuildNum>63134</ReqBuildNum>
+      <ReqBuildDate>2023/01/18</ReqBuildDate>
+    </item>
+    <item>
       <title>DSM 7.2-64570</title>
       <MajorVer>7</MajorVer>
       <MinorVer>2</MinorVer>
