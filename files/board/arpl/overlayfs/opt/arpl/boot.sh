@@ -7,6 +7,13 @@ set -e
 # Sanity check
 loaderIsConfigured || die "$(TEXT "Loader is not configured!")"
 
+# Check if machine has EFI
+[ -d /sys/firmware/efi ] && EFI=1 || EFI=0
+
+LOADER_DISK="$(blkid | grep 'LABEL="ARPL3"' | cut -d3 -f1)"
+BUS=$(udevadm info --query property --name ${LOADER_DISK} | grep ID_BUS | cut -d= -f2)
+[ "${BUS}" = "ata" ] && BUS="sata"
+
 # Print text centralized
 clear
 [ -z "${COLUMNS}" ] && COLUMNS=50
@@ -16,7 +23,14 @@ printf "\033[1;44m%*s\033[A\n" ${COLUMNS} ""
 printf "\033[1;32m%*s\033[0m\n" $(((${#TITLE} + ${COLUMNS}) / 2)) "${TITLE}"
 printf "\033[1;44m%*s\033[0m\n" ${COLUMNS} ""
 TITLE="$(TEXT "BOOTING...")"
+[ -d "/sys/firmware/efi" ] && TITLE+=" [UEFI]" || TITLE+=" [BIOS]"
+[ "${BUS}" = "usb" ] && TITLE+=" [USB flashdisk]" || TITLE+=" [SATA DoM]"
 printf "\033[1;33m%*s\033[0m\n" $(((${#TITLE} + ${COLUMNS}) / 2)) "${TITLE}"
+
+DSMLOGO="$(readConfigKey "dsmlogo" "${USER_CONFIG_FILE}")"
+if [ "${DSMLOGO}" = "true" -a -c "/dev/fb0" -a -f "${CACHE_PATH}/logo.png" ]; then
+  echo | fbv -acuf "${CACHE_PATH}/logo.png" >/dev/null 2>/dev/null || true
+fi
 
 # Check if DSM zImage changed, patch it if necessary
 ZIMAGE_HASH="$(readConfigKey "zimage-hash" "${USER_CONFIG_FILE}")"
@@ -32,7 +46,8 @@ fi
 
 # Check if DSM ramdisk changed, patch it if necessary
 RAMDISK_HASH="$(readConfigKey "ramdisk-hash" "${USER_CONFIG_FILE}")"
-if [ "$(sha256sum "${ORI_RDGZ_FILE}" | awk '{print$1}')" != "${RAMDISK_HASH}" ]; then
+RAMDISK_HASH_CUR="$(sha256sum "${ORI_RDGZ_FILE}" | awk '{print $1}')"
+if [ "${RAMDISK_HASH_CUR}" != "${RAMDISK_HASH}" ]; then
   echo -e "\033[1;43m$(TEXT "DSM Ramdisk changed")\033[0m"
   /opt/arpl/ramdisk-patch.sh
   if [ $? -ne 0 ]; then
@@ -40,51 +55,68 @@ if [ "$(sha256sum "${ORI_RDGZ_FILE}" | awk '{print$1}')" != "${RAMDISK_HASH}" ];
       --msgbox "$(TEXT "Ramdisk not patched:\n")$(<"${LOG_FILE}")" 12 70
     exit 1
   fi
+  writeConfigKey "ramdisk-hash" "${RAMDISK_HASH_CUR}" "${USER_CONFIG_FILE}"
 fi
 
 # Load necessary variables
-VID="$(readConfigKey "vid" "${USER_CONFIG_FILE}")"
-PID="$(readConfigKey "pid" "${USER_CONFIG_FILE}")"
 MODEL="$(readConfigKey "model" "${USER_CONFIG_FILE}")"
-BUILD="$(readConfigKey "build" "${USER_CONFIG_FILE}")"
-SN="$(readConfigKey "sn" "${USER_CONFIG_FILE}")"
+PRODUCTVER="$(readConfigKey "productver" "${USER_CONFIG_FILE}")"
+BUILDNUM="$(readConfigKey "buildnum" "${USER_CONFIG_FILE}")"
+SMALLNUM="$(readConfigKey "smallnum" "${USER_CONFIG_FILE}")"
+LKM="$(readConfigKey "lkm" "${USER_CONFIG_FILE}")"
+BPN="$(dmidecode -s 'baseboard-product-name' | sed 's/Default string//')"
+SPN="$(dmidecode -s 'system-product-name' | sed 's/Default string//')"
+DMI="$(dmesg | grep -i "DMI:" | sed 's/\[.*\] DMI: //i')"
+CPU="$(echo $(cat /proc/cpuinfo | grep 'model name' | uniq | awk -F':' '{print $2}'))"
+MEM="$(free -m | grep -i mem | awk '{print$2}') MB"
 
 echo -e "$(TEXT "Model:") \033[1;36m${MODEL}\033[0m"
-echo -e "$(TEXT "Build:") \033[1;36m${BUILD}\033[0m"
+echo -e "$(TEXT "Build:") \033[1;36m${PRODUCTVER}(${BUILDNUM}$([ ${SMALLNUM:-0} -ne 0 ] && echo "u${SMALLNUM}"))\033[0m"
+echo -e "$(TEXT "LKM:  ") \033[1;36m${LKM}\033[0m"
+if [ -n "${BPN}" ]; then
+  echo -e "$(TEXT "BPN:  ") \033[1;36m${BPN}\033[0m"
+elif [ -n "${SPN}" ]; then
+  echo -e "$(TEXT "SPN:  ") \033[1;36m${SPN}\033[0m"
+else
+  echo -e "$(TEXT "MBN:  ") \033[1;36mUnknown\033[0m"
+fi
+echo -e "$(TEXT "DMI:  ") \033[1;36m${DMI}\033[0m"
+echo -e "$(TEXT "CPU:  ") \033[1;36m${CPU}\033[0m"
+echo -e "$(TEXT "MEM:  ") \033[1;36m${MEM}\033[0m"
 
-if [ ! -f "${MODEL_CONFIG_PATH}/${MODEL}.yml" ] || [ -z "$(readConfigKey "builds.${BUILD}" "${MODEL_CONFIG_PATH}/${MODEL}.yml")" ]; then
-  echo -e "\033[1;33m*** $(printf "$(TEXT "The current version of arpl does not support booting %s-%s, please rebuild.")" "${MODEL}" "${BUILD}") ***\033[0m"
+if [ ! -f "${MODEL_CONFIG_PATH}/${MODEL}.yml" ] || [ -z "$(readConfigKey "productvers.[${PRODUCTVER}]" "${MODEL_CONFIG_PATH}/${MODEL}.yml")" ]; then
+  echo -e "\033[1;33m*** $(printf "$(TEXT "The current version of arpl does not support booting %s-%s, please rebuild.")" "${MODEL}" "${PRODUCTVER}") ***\033[0m"
   exit 1
 fi
+
+VID="$(readConfigKey "vid" "${USER_CONFIG_FILE}")"
+PID="$(readConfigKey "pid" "${USER_CONFIG_FILE}")"
+SN="$(readConfigKey "sn" "${USER_CONFIG_FILE}")"
+MAC1="$(readConfigKey "mac1" "${USER_CONFIG_FILE}")"
 
 declare -A CMDLINE
 
 # Fixed values
-CMDLINE['netif_num']=0
 # Automatic values
 CMDLINE['syno_hw_version']="${MODEL}"
-[ -z "${VID}" ] && VID="0x0000" # Sanity check
-[ -z "${PID}" ] && PID="0x0000" # Sanity check
+[ -z "${VID}" ] && VID="0x46f4" # Sanity check
+[ -z "${PID}" ] && PID="0x0001" # Sanity check
 CMDLINE['vid']="${VID}"
 CMDLINE['pid']="${PID}"
 CMDLINE['sn']="${SN}"
+CMDLINE['netif_num']=1
 
 # Read cmdline
 while IFS=': ' read KEY VALUE; do
   [ -n "${KEY}" ] && CMDLINE["${KEY}"]="${VALUE}"
-done < <(readModelMap "${MODEL}" "builds.${BUILD}.cmdline")
+done < <(readModelMap "${MODEL}" "productvers.[${PRODUCTVER}].cmdline")
 while IFS=': ' read KEY VALUE; do
   [ -n "${KEY}" ] && CMDLINE["${KEY}"]="${VALUE}"
 done < <(readConfigMap "cmdline" "${USER_CONFIG_FILE}")
 
-# Check if machine has EFI
-[ -d /sys/firmware/efi ] && EFI=1 || EFI=0
-# Read EFI bug value
-KVER=$(readModelKey "${MODEL}" "builds.${BUILD}.kver")
+KVER=$(readModelKey "${MODEL}" "productvers.[${PRODUCTVER}].kver")
 
-LOADER_DISK="$(blkid | grep 'LABEL="ARPL3"' | cut -d3 -f1)"
-BUS=$(udevadm info --query property --name ${LOADER_DISK} | grep ID_BUS | cut -d= -f2)
-if [ "${BUS}" = "ata" ]; then
+if [ ! "${BUS}" = "usb" ]; then
   LOADER_DEVICE_NAME=$(echo ${LOADER_DISK} | sed 's|/dev/||')
   SIZE=$(($(cat /sys/block/${LOADER_DEVICE_NAME}/size) / 2048 + 10))
   # Read SATADoM type
@@ -106,19 +138,15 @@ fi
 CMDLINE_LINE=""
 grep -q "force_junior" /proc/cmdline && CMDLINE_LINE+="force_junior "
 [ ${EFI} -eq 1 ] && CMDLINE_LINE+="withefi " || CMDLINE_LINE+="noefi "
-[ "${BUS}" = "ata" ] && CMDLINE_LINE+="synoboot_satadom=${DOM} dom_szmax=${SIZE} "
+[ ! "${BUS}" = "usb" ] && CMDLINE_LINE+="synoboot_satadom=${DOM} dom_szmax=${SIZE} "
 CMDLINE_LINE+="console=ttyS0,115200n8 earlyprintk earlycon=uart8250,io,0x3f8,115200n8 root=/dev/md0 loglevel=15 log_buf_len=32M"
 CMDLINE_DIRECT="${CMDLINE_LINE}"
 for KEY in ${!CMDLINE[@]}; do
   VALUE="${CMDLINE[${KEY}]}"
   CMDLINE_LINE+=" ${KEY}"
-  CMDLINE_DIRECT+=" ${KEY}"
   [ -n "${VALUE}" ] && CMDLINE_LINE+="=${VALUE}"
-  [ -n "${VALUE}" ] && CMDLINE_DIRECT+="=${VALUE}"
 done
 # Escape special chars
-#CMDLINE_LINE=`echo ${CMDLINE_LINE} | sed 's/>/\\\\>/g'`
-CMDLINE_DIRECT=$(echo ${CMDLINE_DIRECT} | sed 's/>/\\\\>/g')
 echo -e "$(TEXT "Cmdline:\n")\033[1;36m${CMDLINE_LINE}\033[0m"
 
 # Wait for an IP
@@ -140,24 +168,31 @@ done
 
 DIRECT="$(readConfigKey "directboot" "${USER_CONFIG_FILE}")"
 if [ "${DIRECT}" = "true" ]; then
+  CMDLINE_DIRECT=$(echo ${CMDLINE_LINE} | sed 's/>/\\\\>/g') # Escape special chars
   grub-editenv ${GRUB_PATH}/grubenv set dsm_cmdline="${CMDLINE_DIRECT}"
   echo -e "\033[1;33m$(TEXT "Reboot to boot directly in DSM")\033[0m"
   grub-editenv ${GRUB_PATH}/grubenv set next_entry="direct"
   reboot
   exit 0
-fi
-echo -e "\033[1;37m$(TEXT "Loading DSM kernel...")\033[0m"
 
-# Executes DSM kernel via KEXEC
-if [ "${KVER:0:1}" = "3" -a ${EFI} -eq 1 ]; then
-  echo -e "\033[1;33m$(TEXT "Warning, running kexec with --noefi param, strange things will happen!!")\033[0m"
-  kexec --noefi -l "${MOD_ZIMAGE_FILE}" --initrd "${MOD_RDGZ_FILE}" --command-line="${CMDLINE_LINE}" >"${LOG_FILE}" 2>&1 || dieLog
 else
-  kexec -l "${MOD_ZIMAGE_FILE}" --initrd "${MOD_RDGZ_FILE}" --command-line="${CMDLINE_LINE}" >"${LOG_FILE}" 2>&1 || dieLog
+
+  echo -en "\r$(printf "%$((${#MSG} * 2))s" " ")\n"
+
+  echo -e "\033[1;37m$(TEXT "Loading DSM kernel...")\033[0m"
+
+  if [ "${KVER:0:1}" = "3" -a ${EFI} -eq 1 ]; then
+    echo -e "\033[1;33m$(TEXT "Warning, running kexec with --noefi param, strange things will happen!!")\033[0m"
+    kexec --noefi -l "${MOD_ZIMAGE_FILE}" --initrd "${MOD_RDGZ_FILE}" --command-line="${CMDLINE_LINE}" >"${LOG_FILE}" 2>&1 || dieLog
+  else
+    kexec -l "${MOD_ZIMAGE_FILE}" --initrd "${MOD_RDGZ_FILE}" --command-line="${CMDLINE_LINE}" >"${LOG_FILE}" 2>&1 || dieLog
+  fi
+  echo -e "\033[1;37m$(TEXT "Booting...")\033[0m"
+  for T in $(w | grep -v "TTY" | awk -F' ' '{print $2}'); do
+    echo -e "\n\033[1;43m$(TEXT "[This interface will not be operational. Please use the http://find.synology.com/ find DSM and connect.]")\033[0m\n" >"/dev/${T}" 2>/dev/null || true
+  done
+  KERNELWAY="$(readConfigKey "kernelway" "${USER_CONFIG_FILE}")"
+  [ "${KERNELWAY}" = "kexec" ] && kexec -f -e || poweroff
+  exit 0
+
 fi
-echo -e "\033[1;37m$(TEXT "Booting...")\033[0m"
-for T in $(w | grep -v "TTY" | awk -F' ' '{print $2}'); do
-  echo -e "\n\033[1;43m$(TEXT "[This interface will not be operational. Please use the http://find.synology.com/ find DSM and connect.]")\033[0m\n" >"/dev/${T}" 2>/dev/null || true
-done
-poweroff
-exit 0
