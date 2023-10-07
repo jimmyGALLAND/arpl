@@ -5,9 +5,6 @@ synoinfo: &synoinfo
   support_bde_internal_10g: "no"
   esataportcfg: "0x00"
   support_led_brightness_adjustment: "no"
-  rss_server: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
-  rss_server_ssl: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
-  rss_server_v2: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.json"
   support_syno_hybrid_raid:
   supportraidgroup:
 cmdline: &cmdline
@@ -16,98 +13,56 @@ cmdline: &cmdline
   syno_hdd_detect: 0
   vender_format_version: 2
   elevator: elevator
+patch: &patch
+  - "ramdisk-etc-rc-*.patch"
+  - "ramdisk-init-script-v4-*.patch"
+  - "ramdisk-post-init-script-*.patch"
+  - "ramdisk-disable-root-pwd-*.patch"
+  - "ramdisk-disable-disabled-ports-*.patch"
 platform: "broadwellnk"
 unique: "synology_broadwellnk_rs4021xs+"
 beta: true
 dom: 2
 serial:
   prefix:
-    - "2250"
+    - "2160"
   middle: "T2R"
   suffix: "alpha"
 disks: 16
 dt: false
-builds:
-  42218:
-    ver: "7.0.1"
+productvers:
+  "6.2":
+    kver: "4.4.59"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    patch: *patch
+
+  "7.0":
     kver: "4.4.180"
     rd-compressed: false
     cmdline:
       <<: *cmdline
     synoinfo:
       <<: *synoinfo
-    pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_RS4021xs%2B_42218.pat"
-      hash: "2a32266b7bcf0b2582b5afd9e39dc444e7cb40eaf4ccfdbfedf4743af821f11c"
-      ramdisk-hash: "f2b99b4c05559376d34d30d6446c30a8b3f44f516e5a041299d03be9c7fd0095"
-      zimage-hash: "d6059bcd7160ed1f775a9323599ac8860b60ada32f0a4f3e5ca166c15a17784e"
-      md5-hash: "cbcb77548de26b6843ab31d7a7258b62"
-    patch:
-      - "ramdisk-common-disable-root-pwd.patch"
-      - "ramdisk-common-init-script.patch"
-      - "ramdisk-common-etc-rc.patch"
-      - "ramdisk-common-post-init-script.patch"
-      - "ramdisk-common-disable-disabled-ports.patch"
+    patch: *patch
 
-  42661:
-    ver: "7.1"
+  "7.1":
     kver: "4.4.180"
     rd-compressed: false
     cmdline:
       <<: *cmdline
     synoinfo:
       <<: *synoinfo
-    pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.1/42661-1/DSM_RS4021xs%2B_42661.pat"
-      hash: "496b64e431dafa34cdebb92da8ac736bf1610fe157f03df7e6d11152d60991f5"
-      ramdisk-hash: "f2b99b4c05559376d34d30d6446c30a8b3f44f516e5a041299d03be9c7fd0095"
-      zimage-hash: "d6059bcd7160ed1f775a9323599ac8860b60ada32f0a4f3e5ca166c15a17784e"
-      md5-hash: "cbcb77548de26b6843ab31d7a7258b62"
-    patch:
-      - "ramdisk-common-disable-root-pwd.patch"
-      - "ramdisk-common-init-script.patch"
-      - "ramdisk-common-etc-rc.patch"
-      - "ramdisk-42661-post-init-script.patch"
-      - "ramdisk-42661-disable-disabled-ports.patch"
+    patch: *patch
 
-  42962:
-    ver: "7.1.1"
-    kver: "4.4.180"
-    rd-compressed: false
-    cmdline:
-      <<: *cmdline
-    synoinfo:
-      <<: *synoinfo
-    pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.1.1/42962-6/DSM_RS4021xs%2B_42962.pat"
-      hash: "9b24656847eac5e94765f314e12f18b1dbec02b8f94c5366cc92211c4fba8c92"
-      ramdisk-hash: "8bbdadb82ca305b98f4f161c94aa08e409a59afef0b0bcc5dddd7bf7ab2765a0"
-      zimage-hash: "2547ff79d8bce71cfa28e5bad84b8022d4278ef111a7b0730c3d6971ff026b9c"
-      md5-hash: "cef9e139ddc27ddcc61f5423bac47659"
-    patch:
-      - "ramdisk-common-disable-root-pwd.patch"
-      - "ramdisk-common-init-script.patch"
-      - "ramdisk-common-etc-rc.patch"
-      - "ramdisk-42951-post-init-script.patch"
-      - "ramdisk-42661-disable-disabled-ports.patch"
-
-  64570:
-    ver: "7.2"
+  "7.2":
     kver: "4.4.302"
     rd-compressed: false
     cmdline:
       <<: *cmdline
     synoinfo:
       <<: *synoinfo
-    pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.2/64570-1/DSM_RS4021xs%2B_64570.pat"
-      hash: "3004dff33f4cb3e99e97aa834c5478a708df72cbb6e46859bd5dbc1a93269aca"
-      ramdisk-hash: "1eef565b10afff16783e1cffa79126457f3264244e50b0ed8569129f0fb15434"
-      zimage-hash: "a4af69c2097b18a5a370768431cf5d84067eaf41833c45088834ae527e5d5da5"
-      md5-hash: "a55ff87947b0ad53e981dc1ffd23c829"
-    patch:
-      - "ramdisk-64570-disable-root-pwd.patch"
-      - "ramdisk-64570-init-script.patch"
-      - "ramdisk-common-etc-rc.patch"
-      - "ramdisk-42951-post-init-script.patch"
-      - "ramdisk-42661-disable-disabled-ports.patch"
+    patch: *patch

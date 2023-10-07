@@ -13,32 +13,43 @@ if [ $(cat /sys/block/${LOADER_DEVICE_NAME}/${LOADER_DEVICE_NAME}3/size) -lt 419
 fi
 
 # Get actual IP
-IP=$(ip route get 1.1.1.1 2>/dev/null | awk '{print$7}')
+IP=$(ip route 2>/dev/null | sed -n 's/.* via .* dev \(.*\)  src \(.*\)  metric .*/\1: \2 /p' | head -1)
 
 # Dirty flag
 DIRTY=0
 
 MODEL="$(readConfigKey "model" "${USER_CONFIG_FILE}")"
-BUILD="$(readConfigKey "build" "${USER_CONFIG_FILE}")"
+PRODUCTVER="$(readConfigKey "productver" "${USER_CONFIG_FILE}")"
+BUILDNUM="$(readConfigKey "buildnum" "${USER_CONFIG_FILE}")"
+SMALLNUM="$(readConfigKey "smallnum" "${USER_CONFIG_FILE}")"
 LAYOUT="$(readConfigKey "layout" "${USER_CONFIG_FILE}")"
 KEYMAP="$(readConfigKey "keymap" "${USER_CONFIG_FILE}")"
 LKM="$(readConfigKey "lkm" "${USER_CONFIG_FILE}")"
+DSMLOGO="$(readConfigKey "dsmlogo" "${USER_CONFIG_FILE}")"
 DIRECTBOOT="$(readConfigKey "directboot" "${USER_CONFIG_FILE}")"
+PRERELEASE="$(readConfigKey "prerelease" "${USER_CONFIG_FILE}")"
+KERNELWAY="$(readConfigKey "kernelway" "${USER_CONFIG_FILE}")"
+ODP="$(readConfigKey "odp" "${USER_CONFIG_FILE}")" # official drivers priorities
 SN="$(readConfigKey "sn" "${USER_CONFIG_FILE}")"
 
 ###############################################################################
 # Mounts backtitle dynamically
 function backtitle() {
-  BACKTITLE="ARPL ${ARPL_VERSION}"
+  BACKTITLE="${ARPL_TITLE}"
   if [ -n "${MODEL}" ]; then
     BACKTITLE+=" ${MODEL}"
   else
     BACKTITLE+=" (no model)"
   fi
-  if [ -n "${BUILD}" ]; then
-    BACKTITLE+=" ${BUILD}"
+  if [ -n "${PRODUCTVER}" ]; then
+    BACKTITLE+=" ${PRODUCTVER}"
+    if [ -n "${BUILDNUM}" ]; then
+      BACKTITLE+="(${BUILDNUM}$([ ${SMALLNUM:-0} -ne 0 ] && echo "u${SMALLNUM}"))"
+    else
+      BACKTITLE+="(no version num)"
+    fi
   else
-    BACKTITLE+=" (no build)"
+    BACKTITLE+=" (no product version)"
   fi
   if [ -n "${SN}" ]; then
     BACKTITLE+=" ${SN}"
@@ -55,6 +66,11 @@ function backtitle() {
   else
     BACKTITLE+=" (qwerty/us)"
   fi
+  if [ -d "/sys/firmware/efi" ]; then
+    BACKTITLE+=" [UEFI]"
+  else
+    BACKTITLE+=" [BIOS]"
+  fi
   echo ${BACKTITLE}
 }
 
@@ -66,20 +82,28 @@ function modelMenu() {
     FLGBETA=0
     dialog --backtitle "$(backtitle)" --title "$(TEXT "Model")" --aspect 18 \
       --infobox "$(TEXT "Reading models")" 0 0
+
+    while read M; do
+      Y=$(echo ${M} | tr -cd "[0-9]")
+      Y=${Y:0-2}
+      echo "${M} ${Y}" >>"${TMP_PATH}/modellist"
+    done < <(find "${MODEL_CONFIG_PATH}" -maxdepth 1 -name \*.yml | sed 's/.*\///; s/\.yml//')
+
     while true; do
       echo "" >"${TMP_PATH}/menu"
       FLGNEX=0
-      while read M; do
-        M="$(basename ${M})"
-        M="${M::-4}"
+      while read M Y; do
         PLATFORM=$(readModelKey "${M}" "platform")
         DT="$(readModelKey "${M}" "dt")"
         BETA="$(readModelKey "${M}" "beta")"
+        Added a menu to try recovery info from installed DSM
         [ "${BETA}" = "true" -a ${FLGBETA} -eq 0 ] && continue
         # Check id model is compatible with CPU
         COMPATIBLE=1
         if [ ${RESTRICT} -eq 1 ]; then
+          format
           for F in $(readModelArray "${M}" "flags"); do
+            Added a menu to try recovery info from installed DSM
             if ! grep -q "^flags.*${F}.*" /proc/cpuinfo; then
               COMPATIBLE=0
               FLGNEX=1
@@ -87,9 +111,9 @@ function modelMenu() {
             fi
           done
         fi
-        [ "${DT}" = "true" ] && DT="-DT" || DT=""
-        [ ${COMPATIBLE} -eq 1 ] && echo "${M} \"\Zb${PLATFORM}${DT}\Zn\" " >>"${TMP_PATH}/menu"
-      done < <(find "${MODEL_CONFIG_PATH}" -maxdepth 1 -name \*.yml | sort)
+        [ "${DT}" = "true" ] && DT="DT" || DT=""
+        [ ${COMPATIBLE} -eq 1 ] && echo "${M} \"$(printf "\Zb%-12s\Zn \Z4%-2s\Zn" "${PLATFORM}" "${DT}")\" " >>"${TMP_PATH}/menu"
+      done < <(cat "${TMP_PATH}/modellist" | sort -r -n -k 2)
       [ ${FLGNEX} -eq 1 ] && echo "f \"\Z1$(TEXT "Disable flags restriction")\Zn\"" >>"${TMP_PATH}/menu"
       [ ${FLGBETA} -eq 0 ] && echo "b \"\Z1$(TEXT "Show beta models")\Zn\"" >>"${TMP_PATH}/menu"
       dialog --backtitle "$(backtitle)" --colors --menu "$(TEXT "Choose the model")" 0 0 0 \
@@ -112,25 +136,36 @@ function modelMenu() {
   fi
   # If user change model, clean buildnumber and S/N
   if [ "${MODEL}" != "${resp}" ]; then
-    MODEL=${resp}
     writeConfigKey "model" "${MODEL}" "${USER_CONFIG_FILE}"
-    BUILD=""
-    writeConfigKey "build" "${BUILD}" "${USER_CONFIG_FILE}"
-    SN=""
+    PRODUCTVER=""
+    BUILDNUM=""
+    SMALLNUM=""
+    writeConfigKey "productver" "" "${USER_CONFIG_FILE}"
+    writeConfigKey "buildnum" "" "${USER_CONFIG_FILE}"
+    writeConfigKey "smallnum" "" "${USER_CONFIG_FILE}"
+    writeConfigKey "paturl" "" "${USER_CONFIG_FILE}"
+    writeConfigKey "patsum" "" "${USER_CONFIG_FILE}"
+    SN=$(generateSerial "${MODEL}")
     writeConfigKey "sn" "${SN}" "${USER_CONFIG_FILE}"
     # Delete old files
-    rm -f "${ORI_ZIMAGE_FILE}" "${ORI_RDGZ_FILE}" "${MOD_ZIMAGE_FILE}" "${MOD_RDGZ_FILE}"
+    //rm -f "${ORI_ZIMAGE_FILE}" "${ORI_RDGZ_FILE}" "${MOD_ZIMAGE_FILE}" "${MOD_RDGZ_FILE}"
     DIRTY=1
   fi
 }
 
 ###############################################################################
 # Shows available buildnumbers from a model to user choose one
-function buildMenu() {
-  ITEMS="$(readConfigEntriesArray "builds" "${MODEL_CONFIG_PATH}/${MODEL}.yml" | sort -r)"
+function productversMenu() {
+  ITEMS="$(readConfigEntriesArray "productvers" "${MODEL_CONFIG_PATH}/${MODEL}.yml" | sort -r)"
+  Added a menu to try recovery info from installed DSM
   if [ -z "${1}" ]; then
-    dialog --clear --no-items --backtitle "$(backtitle)" \
-      --menu "$(TEXT "Choose a build number")" 0 0 0 ${ITEMS} 2>${TMP_PATH}/resp
+    moddify bootwait
+    dialog --backtitle "$(backtitle)" --colors \
+      mod ttyd port to 5000, add NIC check connect
+    --no-items --menu "$(TEXT "Choose a product version")" 0 0 0 ${ITEMS} \
+      format
+    2>${TMP_PATH}/resp
+    Added a menu to try recovery info from installed DSM
     [ $? -ne 0 ] && return
     resp=$(<${TMP_PATH}/resp)
     [ -z "${resp}" ] && return
@@ -138,34 +173,97 @@ function buildMenu() {
     if ! arrayExistItem "${1}" ${ITEMS}; then return; fi
     resp="${1}"
   fi
-  if [ "${BUILD}" != "${resp}" ]; then
-    dialog --backtitle "$(backtitle)" --title "$(TEXT "Build Number")" \
-      --infobox "$(TEXT "Reconfiguring Synoinfo, Addons and Modules")" 0 0
-    BUILD=${resp}
-    writeConfigKey "build" "${BUILD}" "${USER_CONFIG_FILE}"
-    # Delete synoinfo and reload model/build synoinfo
-    writeConfigKey "synoinfo" "{}" "${USER_CONFIG_FILE}"
-    while IFS=': ' read KEY VALUE; do
-      writeConfigKey "synoinfo.${KEY}" "${VALUE}" "${USER_CONFIG_FILE}"
-    done < <(readModelMap "${MODEL}" "builds.${BUILD}.synoinfo")
-    # Check addons
-    PLATFORM="$(readModelKey "${MODEL}" "platform")"
-    KVER="$(readModelKey "${MODEL}" "builds.${BUILD}.kver")"
-    while IFS=': ' read ADDON PARAM; do
-      [ -z "${ADDON}" ] && continue
-      if ! checkAddonExist "${ADDON}" "${PLATFORM}" "${KVER}"; then
-        deleteConfigKey "addons.${ADDON}" "${USER_CONFIG_FILE}"
-      fi
-    done < <(readConfigMap "addons" "${USER_CONFIG_FILE}")
-    # Rebuild modules
-    writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
-    while read ID DESC; do
-      writeConfigKey "modules.${ID}" "" "${USER_CONFIG_FILE}"
-    done < <(getAllModules "${PLATFORM}" "${KVER}")
-    # Remove old files
-    rm -f "${ORI_ZIMAGE_FILE}" "${ORI_RDGZ_FILE}" "${MOD_ZIMAGE_FILE}" "${MOD_RDGZ_FILE}"
-    DIRTY=1
+  modify mac related
+  if [ "${PRODUCTVER}" = "${resp}" ]; then
+    dialog --backtitle "$(backtitle)" --colors --title "$(TEXT "Product Version")" \
+      --yesno "$(printf "$(TEXT "The current version has been set to %s. Do you want to reset the version?")" "${PRODUCTVER}")" 0 0
+    [ $? -ne 0 ] && return
   fi
+  local KVER=$(readModelKey "${MODEL}" "productvers.[${resp}].kver")
+  if [ -d "/sys/firmware/efi" -a "${KVER:0:1}" = "3" ]; then
+    dialog --backtitle "$(backtitle)" --colors --title "$(TEXT "Product Version")" \
+      --msgbox "$(TEXT "This version does not support UEFI startup, Please select another version or switch the startup mode.")" 0 0
+    return
+  fi
+  if [ ! "usb" = "$(udevadm info --query property --name ${LOADER_DISK} | grep ID_BUS | cut -d= -f2)" -a "${KVER:0:1}" = "5" ]; then
+    dialog --backtitle "$(backtitle)" --colors --title "$(TEXT "Product Version")" \
+      --msgbox "$(TEXT "This version only support usb startup, Please select another version or switch the startup mode.")" 0 0
+    # return
+  fi
+  while true; do
+    # get online pat data
+    dialog --backtitle "$(backtitle)" --colors --title "$(TEXT "Product Version")" \
+      --infobox "$(TEXT "Get pat data ..")" 0 0
+    idx=0
+    while [ ${idx} -le 3 ]; do # Loop 3 times, if successful, break
+      fastest=$(_get_fastest "www.synology.com" "www.synology.cn")
+      [ "${fastest}" = "www.synology.cn" ] &&
+        fastest="https://www.synology.cn/api/support/findDownloadInfo?lang=zh-cn" ||
+        fastest="https://www.synology.com/api/support/findDownloadInfo?lang=en-us"
+      patdata=$(curl -skL "${fastest}&product=${MODEL/+/%2B}&major=${resp%%.*}&minor=${resp##*.}")
+      if [ "$(echo ${patdata} | jq -r '.success' 2>/dev/null)" = "true" ]; then
+        if echo ${patdata} | jq -r '.info.system.detail[0].items[0].files[0].label_ext' 2>/dev/null | grep -q 'pat'; then
+          paturl=$(echo ${patdata} | jq -r '.info.system.detail[0].items[0].files[0].url')
+          patsum=$(echo ${patdata} | jq -r '.info.system.detail[0].items[0].files[0].checksum')
+          paturl=${paturl%%\?*}
+          break
+        fi
+      fi
+      idx=$((${idx} + 1))
+    done
+    if [ -z "${paturl}" -o -z "${patsum}" ]; then
+      MSG="$(TEXT "Failed to get pat data,\nPlease manually fill in the URL and md5sum of the corresponding version of pat.")"
+      paturl=""
+      patsum=""
+    else
+      MSG="$(TEXT "Successfully to get pat data,\nPlease confirm or modify as needed.")"
+    fi
+    dialog --backtitle "$(backtitle)" --colors --title "$(TEXT "Product Version")" \
+      modify mac related
+    --extra-button --extra-label "$(TEXT "Retry")" \
+      --form "${MSG}" 10 110 2 "URL" 1 1 "${paturl}" 1 5 100 0 "MD5" 2 1 "${patsum}" 2 5 100 0 \
+      2>"${TMP_PATH}/resp"
+    RET=$?
+    [ ${RET} -eq 0 ] && break    # ok-button
+    [ ${RET} -eq 3 ] && continue # extra-button
+    return                       # 1 or 255  # cancel-button or ESC
+  done
+  paturl="$(cat "${TMP_PATH}/resp" | sed -n '1p')"
+  patsum="$(cat "${TMP_PATH}/resp" | sed -n '2p')"
+  [ -z "${paturl}" -o -z "${patsum}" ] && return
+  writeConfigKey "paturl" "${paturl}" "${USER_CONFIG_FILE}"
+  writeConfigKey "patsum" "${patsum}" "${USER_CONFIG_FILE}"
+  PRODUCTVER=${resp}
+  writeConfigKey "productver" "${PRODUCTVER}" "${USER_CONFIG_FILE}"
+  BUILDNUM=""
+  SMALLNUM=""
+  writeConfigKey "buildnum" "${BUILDNUM}" "${USER_CONFIG_FILE}"
+  writeConfigKey "smallnum" "${SMALLNUM}" "${USER_CONFIG_FILE}"
+  dialog --backtitle "$(backtitle)" --colors --title "$(TEXT "Product Version")" \
+    --infobox "$(TEXT "Reconfiguring Synoinfo, Addons and Modules")" 0 0
+  # Delete synoinfo and reload model/build synoinfo
+  writeConfigKey "synoinfo" "{}" "${USER_CONFIG_FILE}"
+  while IFS=': ' read KEY VALUE; do
+    writeConfigKey "synoinfo.${KEY}" "${VALUE}" "${USER_CONFIG_FILE}"
+  done < <(readModelMap "${MODEL}" "productvers.[${PRODUCTVER}].synoinfo")
+  # Check addons
+  PLATFORM="$(readModelKey "${MODEL}" "platform")"
+  KVER="$(readModelKey "${MODEL}" "productvers.[${PRODUCTVER}].kver")"
+  KPRE="$(readModelKey "${MODEL}" "productvers.[${PRODUCTVER}].kpre")"
+  while IFS=': ' read ADDON PARAM; do
+    [ -z "${ADDON}" ] && continue
+    if ! checkAddonExist "${ADDON}" "${PLATFORM}" "${KVER}"; then
+      deleteConfigKey "addons.${ADDON}" "${USER_CONFIG_FILE}"
+    fi
+  done < <(readConfigMap "addons" "${USER_CONFIG_FILE}")
+  # Rebuild modules
+  writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
+  while read ID DESC; do
+    writeConfigKey "modules.${ID}" "" "${USER_CONFIG_FILE}"
+  done < <(getAllModules "${PLATFORM}" "$([ -n "${KPRE}" ] && echo "${KPRE}-")${KVER}")
+  # Remove old files
+  rm -f "${ORI_ZIMAGE_FILE}" "${ORI_RDGZ_FILE}" "${MOD_ZIMAGE_FILE}" "${MOD_RDGZ_FILE}"
+  DIRTY=1
 }
 
 ###############################################################################
@@ -211,7 +309,8 @@ function serialMenu() {
 function addonMenu() {
   # Read 'platform' and kernel version to check if addon exists
   PLATFORM="$(readModelKey "${MODEL}" "platform")"
-  KVER="$(readModelKey "${MODEL}" "builds.${BUILD}.kver")"
+  KVER="$(readModelKey "${MODEL}" "productvers.[${PRODUCTVER}].kver")"
+  KPRE="$(readModelKey "${MODEL}" "productvers.[${PRODUCTVER}].kpre")"
   # Read addons from user config
   unset ADDONS
   declare -A ADDONS
@@ -342,7 +441,7 @@ function cmdlineMenu() {
   echo "d \"$(TEXT "Delete cmdline item(s)")\"" >>"${TMP_PATH}/menu"
   echo "c \"$(TEXT "Define a custom MAC")\"" >>"${TMP_PATH}/menu"
   echo "s \"$(TEXT "Show user cmdline")\"" >>"${TMP_PATH}/menu"
-  echo "m \"$(TEXT "Show model/build cmdline")\"" >>"${TMP_PATH}/menu"
+  echo "m \"$(TEXT "Show model/version cmdline")\"" >>"${TMP_PATH}/menu"
   echo "e \"$(TEXT "Exit")\"" >>"${TMP_PATH}/menu"
   # Loop menu
   while true; do
@@ -420,8 +519,8 @@ function cmdlineMenu() {
       ITEMS=""
       while IFS=': ' read KEY VALUE; do
         ITEMS+="${KEY}: ${VALUE}\n"
-      done < <(readModelMap "${MODEL}" "builds.${BUILD}.cmdline")
-      dialog --backtitle "$(backtitle)" --title "$(TEXT "Model/build cmdline")" \
+      done < <(readModelMap "${MODEL}" "productvers.[${PRODUCTVER}].cmdline")
+      dialog --backtitle "$(backtitle)" --title "$(TEXT "Model cmdline")" \
         --aspect 18 --msgbox "${ITEMS}" 0 0
       ;;
     e) return ;;
@@ -502,42 +601,34 @@ function synoinfoMenu() {
 ###############################################################################
 # Extract linux and ramdisk files from the DSM .pat
 function extractDsmFiles() {
-  PAT_URL="$(readModelKey "${MODEL}" "builds.${BUILD}.pat.url")"
-  PAT_HASH="$(readModelKey "${MODEL}" "builds.${BUILD}.pat.hash")"
-  RAMDISK_HASH="$(readModelKey "${MODEL}" "builds.${BUILD}.pat.ramdisk-hash")"
-  ZIMAGE_HASH="$(readModelKey "${MODEL}" "builds.${BUILD}.pat.zimage-hash")"
+  PATURL="$(readConfigKey "paturl" "${USER_CONFIG_FILE}")"
+  PATSUM="$(readConfigKey "patsum" "${USER_CONFIG_FILE}")"
 
-  # If we have little disk space, clean cache folder
-  if [ ${CLEARCACHE} -eq 1 ]; then
-    echo "Cleaning cache"
-    rm -rf "${CACHE_PATH}/dl"
-  fi
-  mkdir -p "${CACHE_PATH}/dl"
+  SPACELEFT=$(df --block-size=1 | awk '/'${LOADER_DEVICE_NAME}'3/{print $4}') # Check disk space left
 
-  SPACELEFT=$(df --block-size=1 | awk '/'${LOADER_DEVICE_NAME}'3/{print$4}') # Check disk space left
-
-  PAT_FILE="${MODEL}-${BUILD}.pat"
+  PAT_FILE="${MODEL}-${PRODUCTVER}.pat"
   PAT_PATH="${CACHE_PATH}/dl/${PAT_FILE}"
   EXTRACTOR_PATH="${CACHE_PATH}/extractor"
   EXTRACTOR_BIN="syno_extract_system_patch"
   OLDPAT_URL="https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat"
 
   if [ -f "${PAT_PATH}" ]; then
-    echo "${PAT_FILE} cached."
+    echo "$(printf "$(TEXT "%s cached.")" "${PAT_FILE}")"
   else
-
-    speed_a="`curl -Lo /dev/null -skw "%{speed_download}" "global.synologydownload.com"`"
-    speed_b="`curl -Lo /dev/null -skw "%{speed_download}" "global.download.synology.com"`"
-    speed_c="`curl -Lo /dev/null -skw "%{speed_download}" "cndl.synology.cn"`"
-    fastest="`echo -e "global.synologydownload.com ${speed_a}\nglobal.download.synology.com ${speed_b}\ncndl.synology.cn ${speed_c}" | sort -k2rn | head -1 | awk '{print $1}'`"
-
-    mirror="`echo ${PAT_URL} | sed 's|^http[s]*://\([^/]*\).*|\1|'`"
-    if [ "${mirror}" != "${fastest}" ]; then
-      echo "`printf "$(TEXT "Based on the current network situation, switch to %s mirror to downloading.")" "${fastest}"`"
-      PAT_URL="`echo ${PAT_URL} | sed "s/${mirror}/${fastest}/"`"
-      OLDPAT_URL="https://${fastest}/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat"
+    # If we have little disk space, clean cache folder
+    if [ ${CLEARCACHE} -eq 1 ]; then
+      echo "Cleaning cache"
+      rm -rf "${CACHE_PATH}/dl"
     fi
+    mkdir -p "${CACHE_PATH}/dl"
 
+    fastest=$(_get_fastest "global.synologydownload.com" "global.download.synology.com" "cndl.synology.cn")
+    mirror="$(echo ${PATURL} | sed 's|^http[s]*://\([^/]*\).*|\1|')"
+    if echo "${mirrors[@]}" | grep -wq "${mirror}" && [ "${mirror}" != "${fastest}" ]; then
+      echo "$(printf "$(TEXT "Based on the current network situation, switch to %s mirror to downloading.")" "${fastest}")"
+      PATURL="$(echo ${PATURL} | sed "s/${mirror}/${fastest}/")"
+      OLDPATURL="https://${fastest}/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat"
+    fi
     echo "$(printf "$(TEXT "Downloading %s")" "${PAT_FILE}")"
     # Discover remote file size
     FILESIZE=$(curl -k -sLI "${PAT_URL}" | grep -i Content-Length | awk '{print$2}')
@@ -555,9 +646,9 @@ function extractDsmFiles() {
   fi
 
   echo -n "Checking hash of ${PAT_FILE}: "
-  if [ "$(sha256sum ${PAT_PATH} | awk '{print$1}')" != "${PAT_HASH}" ]; then
+  if [ "$(md5sum ${PAT_PATH} | awk '{print $1}')" != "${PATSUM}" ]; then
     dialog --backtitle "$(backtitle)" --title "$(TEXT "Error")" --aspect 18 \
-      --msgbox "$(TEXT "Hash of pat not match, try again!")" 0 0
+      --msgbox "$(TEXT "md5 Hash of pat not match, try again!")" 0 0
     rm -f ${PAT_PATH}
     return 1
   fi
@@ -651,26 +742,23 @@ function extractDsmFiles() {
   fi
 
   echo -n "$(TEXT "Checking hash of zImage: ")"
-  HASH="$(sha256sum ${UNTAR_PAT_PATH}/zImage | awk '{print$1}')"
-  if [ "${HASH}" != "${ZIMAGE_HASH}" ]; then
-    sleep 1
+  if [ ! -f ${UNTAR_PAT_PATH}/grub_cksum.syno ] ||
+    [ ! -f ${UNTAR_PAT_PATH}/GRUB_VER ] ||
+    [ ! -f ${UNTAR_PAT_PATH}/zImage ] ||
+    [ ! -f ${UNTAR_PAT_PATH}/rd.gz ]; then
     dialog --backtitle "$(backtitle)" --title "$(TEXT "Error")" --aspect 18 \
-      --msgbox "$(TEXT "Hash of zImage not match, try again!")" 0 0
+      --msgbox "$(TEXT "pat Invalid, try again!")" 0 0
     return 1
   fi
-  echo "OK"
+
+  echo -n "$(TEXT "Setting hash: ")"
+  ZIMAGE_HASH="$(sha256sum ${UNTAR_PAT_PATH}/zImage | awk '{print $1}')"
   writeConfigKey "zimage-hash" "${ZIMAGE_HASH}" "${USER_CONFIG_FILE}"
 
-  echo -n "$(TEXT "Checking hash of ramdisk: ")"
-  HASH="$(sha256sum ${UNTAR_PAT_PATH}/rd.gz | awk '{print$1}')"
-  if [ "${HASH}" != "${RAMDISK_HASH}" ]; then
-    sleep 1
-    dialog --backtitle "$(backtitle)" --title "$(TEXT "Error")" --aspect 18 \
-      --msgbox "$(TEXT "Hash of ramdisk not match, try again!")" 0 0
-    return 1
-  fi
-  echo "OK"
+  RAMDISK_HASH="$(sha256sum ${UNTAR_PAT_PATH}/rd.gz | awk '{print $1}')"
   writeConfigKey "ramdisk-hash" "${RAMDISK_HASH}" "${USER_CONFIG_FILE}"
+
+  echo "$(TEXT "OK")"
 
   echo -n "$(TEXT "Copying files: ")"
   cp "${UNTAR_PAT_PATH}/grub_cksum.syno" "${BOOTLOADER_PATH}"
@@ -683,17 +771,39 @@ function extractDsmFiles() {
   echo "OK"
 }
 
+# 1 - model
+function getLogo() {
+  rm -f "${CACHE_PATH}/logo.png"
+  fix something
+  if [ "${DSMLOGO}" = "true" ]; then
+    optimize
+    fastest=$(_get_fastest "www.synology.com" "www.synology.cn")
+    STATUS=$(curl -skL -w "%{http_code}" "https://${fastest}/api/products/getPhoto?product=${MODEL/+/%2B}&type=img_s&sort=0" -o "${CACHE_PATH}/logo.png")
+    fix something
+    if [ $? -ne 0 -o ${STATUS} -ne 200 -o -f "${CACHE_PATH}/logo.png" ]; then
+      convert -rotate 180 "${CACHE_PATH}/logo.png" "${CACHE_PATH}/logo.png" 2>/dev/null
+      magick montage "${CACHE_PATH}/logo.png" -background 'none' -tile '3x3' -geometry '350x210' "${CACHE_PATH}/logo.png" 2>/dev/null
+      convert -rotate 180 "${CACHE_PATH}/logo.png" "${CACHE_PATH}/logo.png" 2>/dev/null
+    fi
+    optimize somethings
+  fi
+}
+
 ###############################################################################
 # Where the magic happens!
 function make() {
   clear
+  # get logo.png
+  getLogo "${MODEL}"
+
   PLATFORM="$(readModelKey "${MODEL}" "platform")"
-  KVER="$(readModelKey "${MODEL}" "builds.${BUILD}.kver")"
+  KVER="$(readModelKey "${MODEL}" "productvers.[${PRODUCTVER}].kver")"
+  KPRE="$(readModelKey "${MODEL}" "productvers.[${PRODUCTVER}].kpre")"
 
   # Check if all addon exists
   while IFS=': ' read ADDON PARAM; do
     [ -z "${ADDON}" ] && continue
-    if ! checkAddonExist "${ADDON}" "${PLATFORM}" "${KVER}"; then
+    if ! checkAddonExist "${ADDON}" "${PLATFORM}" "$([ -n "${KPRE}" ] && echo "${KPRE}-")${KVER}"; then
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Error")" --aspect 18 \
         --msgbox "$(printf "$(TEXT "Addon %s not found!")" "${ADDON}")" 0 0
       return 1
@@ -716,6 +826,10 @@ function make() {
     return 1
   fi
 
+  PRODUCTVER="$(readConfigKey "productver" "${USER_CONFIG_FILE}")"
+  BUILDNUM="$(readConfigKey "buildnum" "${USER_CONFIG_FILE}")"
+  SMALLNUM="$(readConfigKey "smallnum" "${USER_CONFIG_FILE}")"
+
   echo "$(TEXT "Cleaning")"
   rm -rf "${UNTAR_PAT_PATH}"
 
@@ -731,7 +845,7 @@ function advancedMenu() {
   NEXT="l"
   while true; do
     rm "${TMP_PATH}/menu"
-    if [ -n "${BUILD}" ]; then
+    if [ -n "${PRODUCTVER}" ]; then
       echo "l \"$(TEXT "Switch LKM version"): \Z4${LKM}\Zn\"" >>"${TMP_PATH}/menu"
       echo "o \"$(TEXT "Modules") $(carArrow)\"" >>"${TMP_PATH}/menu"
     fi
@@ -741,6 +855,7 @@ function advancedMenu() {
     echo "u \"$(TEXT "Edit user config file manually")\"" >>"${TMP_PATH}/menu"
     echo "t \"$(TEXT "Try to recovery a DSM installed system")\"" >>"${TMP_PATH}/menu"
     echo "s \"$(TEXT "Show SATA(s)) # ports and drives")\"" >>"${TMP_PATH}/menu"
+    echo "g \"$(TEXT "Show dsm logo:") \Z4${DSMLOGO}\Zn\"" >>"${TMP_PATH}/menu"
     echo "e \"$(TEXT "Exit")\"" >>"${TMP_PATH}/menu"
 
     dialog --default-item ${NEXT} --backtitle "$(backtitle)" --title "$(TEXT "Advanced")" \
@@ -809,10 +924,15 @@ function tryRecoveryDSM() {
     --infobox "$(TEXT "Trying to recovery a DSM installed system")" 0 0
   if findAndMountDSMRoot; then
     MODEL=""
-    BUILD=""
+    PRODUCTVER=""
+    BUILDNUM=""
+    SMALLNUM=""
     if [ -f "${DSMROOT_PATH}/.syno/patch/VERSION" ]; then
       eval $(cat ${DSMROOT_PATH}/.syno/patch/VERSION | grep unique)
-      eval $(cat ${DSMROOT_PATH}/.syno/patch/VERSION | grep base)
+      eval $(cat ${DSMROOT_PATH}/.syno/patch/VERSION | grep majorversion)
+      eval $(cat ${DSMROOT_PATH}/.syno/patch/VERSION | grep minorversion)
+      eval $(cat ${DSMROOT_PATH}/.syno/patch/VERSION | grep buildnumber)
+      eval $(cat ${DSMROOT_PATH}/.syno/patch/VERSION | grep smallfixnumber)
       if [ -n "${unique}" ]; then
         while read F; do
           M="$(basename ${F})"
@@ -823,16 +943,20 @@ function tryRecoveryDSM() {
           modelMenu "${M}"
         done < <(find "${MODEL_CONFIG_PATH}" -maxdepth 1 -name \*.yml | sort)
         if [ -n "${MODEL}" ]; then
-          buildMenu ${base}
-          if [ -n "${BUILD}" ]; then
+          productversMenu ${base}
+          if [ -n "${PRODUCTVER}" ]; then
             cp "${DSMROOT_PATH}/.syno/patch/zImage" "${SLPART_PATH}"
             cp "${DSMROOT_PATH}/.syno/patch/rd.gz" "${SLPART_PATH}"
-            MSG=$(printf "$(TEXT "Found a installation:\n%s: \n%s:")" "${MODEL}" "${BUILD}")
+            MSG="$(printf "$(TEXT "Found a installation:\nModel: %s\nProductversion: %s")" "${MODEL}" "${PRODUCTVER}")"
             SN=$(_get_conf_kv SN "${DSMROOT_PATH}/etc/synoinfo.conf")
             if [ -n "${SN}" ]; then
               writeConfigKey "sn" "${SN}" "${USER_CONFIG_FILE}"
               MSG+="\nSerial: ${SN}"
             fi
+            BUILDNUM=${buildnumber}
+            SMALLNUM=${smallfixnumber}
+            writeConfigKey "buildnum" "${BUILDNUM}" "${USER_CONFIG_FILE}"
+            writeConfigKey "smallnum" "${SMALLNUM}" "${USER_CONFIG_FILE}"
             dialog --backtitle "$(backtitle)" --title "$(TEXT "Try recovery DSM")" \
               --aspect 18 --msgbox "${MSG}" 0 0
           fi
@@ -849,10 +973,11 @@ function tryRecoveryDSM() {
 # Permit user select the modules to include
 function selectModules() {
   PLATFORM="$(readModelKey "${MODEL}" "platform")"
-  KVER="$(readModelKey "${MODEL}" "builds.${BUILD}.kver")"
+  KVER="$(readModelKey "${MODEL}" "productvers.[${PRODUCTVER}].kver")"
+  KPRE="$(readModelKey "${MODEL}" "productvers.[${PRODUCTVER}].kpre")"
   dialog --backtitle "$(backtitle)" --title "Modules" --aspect 18 \
     --infobox "$(TEXT "Reading modules")" 0 0
-  ALLMODULES=$(getAllModules "${PLATFORM}" "${KVER}")
+  ALLMODULES=$(getAllModules "${PLATFORM}" "$([ -n "${KPRE}" ] && echo "${KPRE}-")${KVER}")
   unset USERMODULES
   declare -A USERMODULES
   while IFS=': ' read KEY VALUE; do
@@ -940,12 +1065,14 @@ function editUserConfig() {
     dialog --backtitle "$(backtitle)" --title "$(TEXT "Invalid YAML format")" --msgbox "${ERRORS}" 0 0
   done
   OLDMODEL=${MODEL}
-  OLDBUILD=${BUILD}
+  OLDPRODUCTVER=${PRODUCTVER}
+  OLDBUILDNUM=${BUILDNUM}
   MODEL="$(readConfigKey "model" "${USER_CONFIG_FILE}")"
-  BUILD="$(readConfigKey "build" "${USER_CONFIG_FILE}")"
+  PRODUCTVER="$(readConfigKey "productver" "${USER_CONFIG_FILE}")"
+  BUILDNUM="$(readConfigKey "buildnum" "${USER_CONFIG_FILE}")"
   SN="$(readConfigKey "sn" "${USER_CONFIG_FILE}")"
 
-  if [ "${MODEL}" != "${OLDMODEL}" -o "${BUILD}" != "${OLDBUILD}" ]; then
+  if [ "${MODEL}" != "${OLDMODEL}" -o "${PRODUCTVER}" != "${OLDPRODUCTVER}" -o "${BUILDNUM}" != "${OLDBUILDNUM}" ]; then
     # Remove old files
     rm -f "${MOD_ZIMAGE_FILE}"
     rm -f "${MOD_RDGZ_FILE}"
@@ -1022,8 +1149,11 @@ function keymapMenu() {
 
 ###############################################################################
 function updateMenu() {
+  CUR_ARPL_VER="${ARPL_VERSION:-0}"
+  CUR_ADDONS_VER="$(cat "${CACHE_PATH}/addons/VERSION" 2>/dev/null)"
+  CUR_MODULES_VER="$(cat "${CACHE_PATH}/modules/VERSION" 2>/dev/null)"
+  CUR_LKMS_VER="$(cat "${CACHE_PATH}/lkms/VERSION" 2>/dev/null)"
   PLATFORM="$(readModelKey "${MODEL}" "platform")"
-  KVER="$(readModelKey "${MODEL}" "builds.${BUILD}.kver")"
   while true; do
     dialog --backtitle "$(backtitle)" --menu "$(TEXT "Choose a option")" 0 0 0 \
       a "$(TEXT "Update arpl")" \
@@ -1083,7 +1213,7 @@ function updateMenu() {
         if [ "${KEY: -1}" = "/" ]; then
           rm -Rf "${VALUE}"
           mkdir -p "${VALUE}"
-          tar -zxf "/tmp/`basename "${KEY}"`.tgz" -C "${VALUE}"
+          tar -zxf "/tmp/$(basename "${KEY}").tgz" -C "${VALUE}"
         else
           mkdir -p "$(dirname "${VALUE}")"
           mv "/tmp/$(basename "${KEY}")" "${VALUE}"
@@ -1160,16 +1290,6 @@ function updateMenu() {
     m)
       unset PLATFORMS
       declare -A PLATFORMS
-      while read M; do
-        M="$(basename ${M})"
-        M="${M::-4}"
-        P=$(readModelKey "${M}" "platform")
-        ITEMS="$(readConfigEntriesArray "builds" "${MODEL_CONFIG_PATH}/${M}.yml")"
-        for B in ${ITEMS}; do
-          KVER=$(readModelKey "${M}" "builds.${B}.kver")
-          PLATFORMS["${P}-${KVER}"]=""
-        done
-      done < <(find "${MODEL_CONFIG_PATH}" -maxdepth 1 -name \*.yml | sort)
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update Modules")" --aspect 18 \
         --infobox "$(TEXT "Checking last version")" 0 0
       TAG=$(curl -k -s https://api.github.com/repos/jimmyGALLAND/arpl-modules/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3)}')
@@ -1193,7 +1313,7 @@ function updateMenu() {
         writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
         while read ID DESC; do
           writeConfigKey "modules.${ID}" "" "${USER_CONFIG_FILE}"
-        done < <(getAllModules "${PLATFORM}" "${KVER}")
+        done < <(getAllModules "${PLATFORM}" "$([ -n "${KPRE}" ] && echo "${KPRE}-")${KVER}")
       fi
       DIRTY=1
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update Modules")" --aspect 18 \
@@ -1207,7 +1327,7 @@ function updateMenu() {
 ###############################################################################
 ###############################################################################
 
-if [ "x$1" = "xb" -a -n "${MODEL}" -a -n "${BUILD}" -a loaderIsConfigured ]; then
+if [ "x$1" = "xb" -a -n "${MODEL}" -a -n "${PRODUCTVER}" -a loaderIsConfigured ]; then
   install-addons.sh
   make
   boot && exit 0 || sleep 5
@@ -1217,9 +1337,9 @@ NEXT="m"
 while true; do
   echo -e "m \"$(TEXT "Choose a model") $(carArrow)\"" >"${TMP_PATH}/menu"
   if [ -n "${MODEL}" ]; then
-    echo -e "n \"$(TEXT "Choose a Build Number") $(carArrow)\"" >>"${TMP_PATH}/menu"
+    echo -e "n \"$(TEXT "Choose a version") $(carArrow)\"" >>"${TMP_PATH}/menu"
     echo "s \"$(TEXT "Choose a serial number")\"" >>"${TMP_PATH}/menu"
-    if [ -n "${BUILD}" ]; then
+    if [ -n "${PRODUCTVER}" ]; then
       echo -e "a \"$(TEXT "Addons") $(carArrow)\"" >>"${TMP_PATH}/menu"
       echo -e "x \"$(TEXT "Cmdline menu") $(carArrow)\"" >>"${TMP_PATH}/menu"
       echo -e "i \"$(TEXT "Synoinfo menu") $(carArrow)\"" >>"${TMP_PATH}/menu"
@@ -1227,7 +1347,7 @@ while true; do
   fi
   echo -e "v \"$(TEXT "Advanced menu") $(carArrow)\"" >>"${TMP_PATH}/menu"
   if [ -n "${MODEL}" ]; then
-    if [ -n "${BUILD}" ]; then
+    if [ -n "${PRODUCTVER}" ]; then
       echo "d \"$(TEXT "Build the loader")\"" >>"${TMP_PATH}/menu"
     fi
   fi
@@ -1252,7 +1372,7 @@ while true; do
     NEXT="n"
     ;;
   n)
-    buildMenu
+    productversMenu
     NEXT="s"
     ;;
   s)

@@ -73,6 +73,7 @@ ETHX=($(ls /sys/class/net/ | grep eth)) # real network cards list
 if [ ! -f "${USER_CONFIG_FILE}" ]; then
   touch "${USER_CONFIG_FILE}"
   writeConfigKey "lkm" "prod" "${USER_CONFIG_FILE}"
+  writeConfigKey "dsmlogo" "true" "${USER_CONFIG_FILE}"
   writeConfigKey "directboot" "false" "${USER_CONFIG_FILE}"
   writeConfigKey "model" "" "${USER_CONFIG_FILE}"
   writeConfigKey "build" "" "${USER_CONFIG_FILE}"
@@ -87,6 +88,7 @@ if [ ! -f "${USER_CONFIG_FILE}" ]; then
   writeConfigKey "addons" "{}" "${USER_CONFIG_FILE}"
   writeConfigKey "addons.misc" "" "${USER_CONFIG_FILE}"
   writeConfigKey "addons.acpid" "" "${USER_CONFIG_FILE}"
+  writeConfigKey "addons.reboottoarpl" "" "${USER_CONFIG_FILE}"
   writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
   # When the user has not customized, Use 1 to maintain normal startup parameters.
   # writeConfigKey "cmdline.netif_num" "1" "${USER_CONFIG_FILE}"

@@ -4,9 +4,6 @@ synoinfo: &synoinfo
   support_memory_compatibility: "no"
   buzzeroffen: "0xffff"
   support_led_brightness_adjustment: "no"
-  rss_server: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
-  rss_server_ssl: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
-  rss_server_v2: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.json"
   support_syno_hybrid_raid:
   supportraidgroup:
 cmdline: &cmdline
@@ -17,6 +14,11 @@ cmdline: &cmdline
   syno_ttyS0: "serial,0x3f8"
   syno_ttyS1: "serial,0x2f8"
   elevator: elevator
+patch: &patch
+  - "ramdisk-etc-rc-*.patch"
+  - "ramdisk-init-script-v4-*.patch"
+  - "ramdisk-post-init-script-*.patch"
+  - "ramdisk-disable-root-pwd-*.patch"
 platform: "geminilake"
 unique: "synology_geminilake_dva1622"
 dom: 2
@@ -30,64 +32,21 @@ serial:
   suffix: "alpha"
 disks: 2
 dt: true
-builds:
-  42661:
-    ver: "7.1.0"
+productvers:
+  "7.1":
     kver: "4.4.180"
     rd-compressed: false
     cmdline:
       <<: *cmdline
     synoinfo:
       <<: *synoinfo
-    pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.1/42661-1/DSM_DVA1622_42661.pat"
-      hash: "f1484cf302627072ca393293cd73e61dc9e09d479ef028b216eae7c12f7b7825"
-      ramdisk-hash: "6290945ba61f652aec83725f81f5a47bd5e4cdbeb86241c33825154140e164ec"
-      zimage-hash: "1d0e5b76e08e3483f6bf06d23b5978ec498b855bde23db1f96f343db4c43337d"
-      md5-hash: "27515a2e7c2f2113ccf8955bf22f3974"
-    patch:
-      - "ramdisk-common-disable-root-pwd.patch"
-      - "ramdisk-common-init-script.patch"
-      - "ramdisk-common-etc-rc.patch"
-      - "ramdisk-42661-post-init-script.patch"
+    patch: *patch
 
-  42962:
-    ver: "7.1.1"
-    kver: "4.4.180"
+  "7.2":
+    kver: "4.4.302"
     rd-compressed: false
     cmdline:
       <<: *cmdline
     synoinfo:
       <<: *synoinfo
-    pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.1.1/42962-1/DSM_DVA1622_42962.pat"
-      hash: "ebebc3f1de22b789b386f1d52fbe0be3fcca23f83e0d34ed9c24e794701b4c3d"
-      ramdisk-hash: "ef95b0b14363c5c7a8a123e0661ac3ac2f35bbdf9d5c61e0d311cab0120de5aa"
-      zimage-hash: "2de065851b8d3a222db1feea696aab12ded7b582876b22ff6e847cd6f2e62ecf"
-      md5-hash: "6073f5daa75a0eda84e6a3f3cbae4920"
-    patch:
-      - "ramdisk-common-disable-root-pwd.patch"
-      - "ramdisk-common-init-script.patch"
-      - "ramdisk-common-etc-rc.patch"
-      - "ramdisk-42951-post-init-script.patch"
-
-64570:
-  ver: "7.2"
-  kver: "4.4.302"
-  rd-compressed: false
-  cmdline:
-    <<: *cmdline
-  synoinfo:
-    <<: *synoinfo
-  pat:
-    url: "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DVA1622_64570.pat"
-    hash: "8dac8f4d94961f602a34b3f6a4e5e14004166485c8f50016a3f9061ae0c126a8"
-    ramdisk-hash: "8e0e5f126a3b4c1d95df5fb344c56539386156f69e1c8b321d09c61e5e225b10"
-    zimage-hash: "8cbe286e7b8085ca579695505311ba7265e018a7b4417ec33484fc8df13d2ec3"
-    md5-hash: "44fd3019296f0593d3c5e0ce34740cd0"
-  patch:
-    - "ramdisk-64570-disable-root-pwd.patch"
-    - "ramdisk-64570-init-script.patch"
-    - "ramdisk-common-etc-rc.patch"
-    - "ramdisk-42951-post-init-script.patch"
-    - "ramdisk-42661-disable-disabled-ports.patch"
+    patch: *patch
