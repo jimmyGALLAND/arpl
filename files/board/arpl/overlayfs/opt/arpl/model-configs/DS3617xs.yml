@@ -7,8 +7,6 @@ synoinfo: &synoinfo
   esataportcfg: "0x00"
   usbportcfg: "0x8700"
   support_led_brightness_adjustment: "no"
-  rss_server: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
-  rss_server_ssl: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
   support_syno_hybrid_raid:
   supportraidgroup:
 cmdline: &cmdline
@@ -113,4 +111,25 @@ builds:
       - "ramdisk-64570-init-script.patch"
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-42951-post-init-script.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"
+
+  69057:
+    ver: "7.2.1"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.2.1/69057-1/DSM_DS3617xs_69057.pat"
+      hash: "048fae21cc3476ff3a26e33001b94eab9a0da0d3e43bb95ab3a68b9c8d6208fc"
+      ramdisk-hash: "949cc855cbc159552cd6fe3952a43fb3f8ae1aefd3172d7475e846a6a0ca519b"
+      zimage-hash: "6fba28bc3743569d6d6ef761ea5d1d4d2f96128e9e13ee9312c43f50ff387bb5"
+      md5-hash: "97c06b5d99a708b9c9eff62077b8a6bc"
+    patch:
+      - "ramdisk-64570-disable-root-pwd.patch"
+      - "ramdisk-init-script-v4-69057.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"

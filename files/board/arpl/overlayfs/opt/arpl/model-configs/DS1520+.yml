@@ -4,9 +4,6 @@ synoinfo: &synoinfo
   support_memory_compatibility: "no"
   support_led_brightness_adjustment: "no"
   support_bde_internal_10g: "no"
-  rss_server: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
-  rss_server_ssl: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
-  rss_server_v2: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.json"
   support_syno_hybrid_raid:
   supportraidgroup:
 cmdline: &cmdline
@@ -109,3 +106,24 @@ builds:
       - "ramdisk-64570-init-script.patch"
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-64570-post-init-script.patch"
+
+  69057:
+    ver: "7.2.1"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.2.1/69057-1/DSM_DS1520%2B_69057.pat"
+      hash: "2e72bbf3c937892fb2686a1bc7bd021edf74ac6be52cf175dd330882883ca74b"
+      ramdisk-hash: "42b75b2c5a5cc129379e1e8b936079eeff69575f96a81c4e34ad556b56b57263"
+      zimage-hash: "25636c9ceccc9fe0fd7a10c256d5e6543d67f7f49e6b80fb13400b9a8347ee3f"
+      md5-hash: "a028a246334bb45b398a240ecfe194e8"
+    patch:
+      - "ramdisk-64570-disable-root-pwd.patch"
+      - "ramdisk-init-script-v4-69057.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-post-init-script-69057.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"
