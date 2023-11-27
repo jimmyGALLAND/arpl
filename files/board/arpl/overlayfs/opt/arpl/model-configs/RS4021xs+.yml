@@ -5,9 +5,6 @@ synoinfo: &synoinfo
   support_bde_internal_10g: "no"
   esataportcfg: "0x00"
   support_led_brightness_adjustment: "no"
-  rss_server: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
-  rss_server_ssl: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.xml"
-  rss_server_v2: "https://raw.githubusercontent.com/jimmyGALLAND/arpl/main/rss.json"
   support_syno_hybrid_raid:
   supportraidgroup:
 cmdline: &cmdline
@@ -110,4 +107,25 @@ builds:
       - "ramdisk-64570-init-script.patch"
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-42951-post-init-script.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"
+
+  69057:
+    ver: "7.2.1"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.2.1/69057-1/DSM_RS4021xs%2B_69057.pat"
+      hash: "004f8c7488058570dc752e91f72d37cf17b6ec8c8ec2c7f8b3f1f9c855a02f7e"
+      ramdisk-hash: "36449131812f27a6eb1da9bddcd8fc561526aadf151b7f696da08aa72f5ccd57"
+      zimage-hash: "89100eceac2dd33d7290deb352d6ced734a261003777df7a5745075416dc81fe"
+      md5-hash: "339a5bd6bdcb65b32a57c344fef41dff"
+    patch:
+      - "ramdisk-64570-disable-root-pwd.patch"
+      - "ramdisk-init-script-v4-69057.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"

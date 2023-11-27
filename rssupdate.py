@@ -6,10 +6,11 @@
 # See /LICENSE for more information.
 #
 
-import os, re, sys, subprocess, hashlib, requests, json, yaml
+import os, re, sys, subprocess, hashlib, requests, json
 import xml.etree.ElementTree as ET
-from urllib.parse import urlparse
+from urllib.parse import urlparse 
 from bs4 import BeautifulSoup
+from ruamel.yaml import YAML
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -121,9 +122,10 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
         if ".yml" in filename:  # filename.endswith(".yml"):
             models.append(filename.split(".yml")[0])
 
+    
+    #models = ['DVA1622', 'DVA3219']
     print(models)
     
-
     pats = {}
     
     # Get beta pats
@@ -170,6 +172,11 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
     rssjson = {}
     with open('rsshead.json', "r", encoding='utf-8') as f:
         rssjson = json.loads(f.read())
+    
+    yaml = YAML(typ='safe')
+
+    yaml.preserve_quotes = True
+  
 
     for filename in os.listdir(os.path.join(FILE_PATH, configs)):
         if ".yml" not in filename:  # filename.endswith(".yml"):
@@ -178,7 +185,7 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
         
         data = ''
         with open(os.path.join(FILE_PATH, configs, filename), "r", encoding='utf-8') as f:
-            data = yaml.load(f, Loader=yaml.BaseLoader)
+            data = yaml.load(f)
         try:
             isChange=False
             for ver in data["builds"].keys():
@@ -196,14 +203,19 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
                     if isUpdateConfigs is True:
                         isChange = True
                         # config.yml
-                        # data["builds"][ver]["pat"] = hashdata  # pyyaml 会修改文件格式
+                        #data["builds"][ver]["pat"] = hashdata  # pyyaml 会修改文件格式
                         # yq -iy '.builds."25556".pat |= {url:"...", hash:"..."}' DS918+.yml  # yq 也会修改文件格式
+
                         pat = data["builds"][ver]["pat"]
                         if not all(bool(key) for key in pat.keys()):
                             print("[E] {}  builds.{} key error".format(filename, ver))
                             return 
+
+                      
                         commands = ['sed', '-i', 's|{}|{}|; s|{}|{}|; s|{}|{}|; s|{}|{}|; s|{}|{}|'.format(pat["url"], hashdata["url"], pat["hash"], hashdata["hash"], pat["ramdisk-hash"], hashdata["ramdisk-hash"], pat["zimage-hash"], hashdata["zimage-hash"], pat["md5-hash"], hashdata["md5-hash"]), os.path.join(FILE_PATH, configs, filename)]
+                        #print(commands)
                         result = subprocess.check_output(commands)
+
 
                     if isUpdateRss is True:
                         # rss.xml
@@ -214,11 +226,12 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
                         for idx in range(len(rssjson["channel"]["item"])):
                             if rssjson["channel"]["item"][idx]["BuildNum"] == int(ver):
                                 rssjson["channel"]["item"][idx]["model"].append({"mUnique": hashdata["unique"], "mLink": hashdata["url"], "mCheckSum": hashdata["md5-hash"]})
-            # if isUpdateConfigs is True:
-            #     # pyyaml mdifiera le format du fichier
-            #     if isChange is True:
-            #         with open(os.path.join(FILE_PATH, configs, filename), "w", encoding='utf-8') as f:
-            #             yaml.dump(data, f, Dumper=yaml.SafeDumper, sort_keys=False)   
+            #if isUpdateConfigs is True:
+                 # pyyaml mdifiera le format du fichier
+                 #if isChange is True:
+                     #with open(os.path.join(FILE_PATH, configs, filename), "w", encoding='utf-8') as f:
+                        #yaml.dump(data, f)   
+                      #print(data)
         except:
             pass
 
