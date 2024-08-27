@@ -120,10 +120,10 @@ builds:
       <<: *synoinfo
     pat:
       url: "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_DVA1622_72803.pat"
-      hash: "004f8c7488058570dc752e91f72d37cf17b6ec8c8ec2c7f8b3f1f9c855a02f7e"
-      ramdisk-hash: "36449131812f27a6eb1da9bddcd8fc561526aadf151b7f696da08aa72f5ccd57"
-      zimage-hash: "89100eceac2dd33d7290deb352d6ced734a261003777df7a5745075416dc81fe"
-      md5-hash: "339a5bd6bdcb65b32a57c344fef41dff"
+      hash: "4f0412f4c7595ae034ff12474ba87e88b404c20efe0e77826d415473def1e2cb"
+      ramdisk-hash: "2e259291cf367aa70e2a91aaa86a28b60cadf930b5aa2ff9c0d6170f185e7f3b"
+      zimage-hash: "a4216c5309ab330ee771f126a84dc5f9fccb9b3386ec3a8d862ac7619f52c367"
+      md5-hash: "3e2dfebca0f7d63345fd8412b389fe5f"
     patch:
       - "ramdisk-64570-disable-root-pwd.patch"
       - "ramdisk-init-script-v4-69057.patch"

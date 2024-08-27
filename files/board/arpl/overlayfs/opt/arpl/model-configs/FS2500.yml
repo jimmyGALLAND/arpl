@@ -137,10 +137,10 @@ builds:
       <<: *synoinfo
     pat:
       url: "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_FS2500_72803.pat"
-      hash: "004f8c7488058570dc752e91f72d37cf17b6ec8c8ec2c7f8b3f1f9c855a02f7e"
-      ramdisk-hash: "36449131812f27a6eb1da9bddcd8fc561526aadf151b7f696da08aa72f5ccd57"
-      zimage-hash: "89100eceac2dd33d7290deb352d6ced734a261003777df7a5745075416dc81fe"
-      md5-hash: "339a5bd6bdcb65b32a57c344fef41dff"
+      hash: "f87e70debf48314802cfcfd74107c78ea3cbd37c5ebe5e01fb70929716b403af"
+      ramdisk-hash: "e6936d3a287f1c4ba618c48abd420c6e75f0587e50eacca798a1ebb80fee0faa"
+      zimage-hash: "0affb1bc69c320c59ae6f26a395638897541a252eab360f43f31ba47933e66e6"
+      md5-hash: "2950e6e7d377a6f11c5963dd4ad50a12"
     patch:
       - "ramdisk-64570-disable-root-pwd.patch"
       - "ramdisk-init-script-v4-69057.patch"
