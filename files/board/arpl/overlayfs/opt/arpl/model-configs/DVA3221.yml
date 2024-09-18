@@ -134,7 +134,7 @@ builds:
       - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"
 
-  72803:
+  72806:
     ver: "7.2.2"
     kver: "4.4.302"
     rd-compressed: false
@@ -143,7 +143,7 @@ builds:
     synoinfo:
       <<: *synoinfo
     pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_DVA3221_72803.pat"
+      url: "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_DVA3221_72806.pat"
       hash: "179f3b11fecefce4efb147e8fb047aa05f0e8748949297d30ef0afbec04cbb2a"
       ramdisk-hash: "f6a97463902a014a0c2ea55c8c70833c0dc0ca1322ce79ef9bb53e04c470f187"
       zimage-hash: "7d3d3d125582743bc8b7215a555316c65ea79d9e78dac72525ba8791abbe1604"

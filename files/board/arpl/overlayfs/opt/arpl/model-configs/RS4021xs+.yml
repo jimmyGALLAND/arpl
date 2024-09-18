@@ -130,7 +130,7 @@ builds:
       - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"
 
-  72803:
+  72806:
     ver: "7.2.2"
     kver: "4.4.302"
     rd-compressed: false
@@ -139,7 +139,7 @@ builds:
     synoinfo:
       <<: *synoinfo
     pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.2.2/72803/DSM_RS4021xs%2B_72803.pat"
+      url: "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_RS4021xs%2B_72806.pat"
       hash: "779034519be532c2dbba6efd4762817bb524863f8cb2ad6609631d2d580a5fce"
       ramdisk-hash: "3f4f9be6de960cf6176d88be83d479ceeefe7346e9d53bcb8178ae5b6bb1c3a8"
       zimage-hash: "0827d230001b5c1774df6cf5197dac9729595c6ba7d59cad39758da8f0522ddb"
