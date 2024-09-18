@@ -3,15 +3,15 @@
   <channel>
       <title>RSS for DSM Auto Update</title>
       <link>http://update.synology.com/autoupdate/genRSS.php</link>
-      <pubDate>Tue May 9 11:52:15 CST 2023</pubDate>
+      <pubDate>Wednesday, 18-Sep-2024 18:42:11 UTC</pubDate>
       <copyright>Copyright 2024 Synology Inc</copyright>
 <item>
-      <title>DSM 7.2.2-72803</title>
+      <title>DSM 7.2.2-72806</title>
       <MajorVer>7</MajorVer>
       <MinorVer>2</MinorVer>
       <BuildPhase>GM</BuildPhase>
-      <BuildNum>69057</BuildNum>
-      <BuildDate>2023/08/21</BuildDate>
+      <BuildNum>72806</BuildNum>
+      <BuildDate>2024/09/18</BuildDate>
       <ReqMajorVer>7</ReqMajorVer>
       <ReqMinorVer>2</ReqMinorVer>
       <ReqBuildPhase>1</ReqBuildPhase>
