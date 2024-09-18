@@ -36,9 +36,9 @@ builds:
     pat:
       url: "https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_RS4021xs%2B_42218.pat"
       hash: "2a32266b7bcf0b2582b5afd9e39dc444e7cb40eaf4ccfdbfedf4743af821f11c"
-      ramdisk-hash: "f2b99b4c05559376d34d30d6446c30a8b3f44f516e5a041299d03be9c7fd0095"
-      zimage-hash: "d6059bcd7160ed1f775a9323599ac8860b60ada32f0a4f3e5ca166c15a17784e"
-      md5-hash: "cbcb77548de26b6843ab31d7a7258b62"
+      ramdisk-hash: "143e475fe73c0adb3377361402b4baad21448476e844e55e16d1ed51ffc4c971"
+      zimage-hash: "e073dd84054f652811e0ae1932af2c7cdbd5fb6e5f18f265097072b8af4605e8"
+      md5-hash: "ddbbbcf8ccb8d9d345df3e08debc66f6"
     patch:
       - "ramdisk-common-disable-root-pwd.patch"
       - "ramdisk-common-init-script.patch"
@@ -57,9 +57,9 @@ builds:
     pat:
       url: "https://global.synologydownload.com/download/DSM/release/7.1/42661-1/DSM_RS4021xs%2B_42661.pat"
       hash: "496b64e431dafa34cdebb92da8ac736bf1610fe157f03df7e6d11152d60991f5"
-      ramdisk-hash: "f2b99b4c05559376d34d30d6446c30a8b3f44f516e5a041299d03be9c7fd0095"
-      zimage-hash: "d6059bcd7160ed1f775a9323599ac8860b60ada32f0a4f3e5ca166c15a17784e"
-      md5-hash: "cbcb77548de26b6843ab31d7a7258b62"
+      ramdisk-hash: "143e475fe73c0adb3377361402b4baad21448476e844e55e16d1ed51ffc4c971"
+      zimage-hash: "e073dd84054f652811e0ae1932af2c7cdbd5fb6e5f18f265097072b8af4605e8"
+      md5-hash: "ddbbbcf8ccb8d9d345df3e08debc66f6"
     patch:
       - "ramdisk-common-disable-root-pwd.patch"
       - "ramdisk-common-init-script.patch"
@@ -119,10 +119,10 @@ builds:
       <<: *synoinfo
     pat:
       url: "https://global.synologydownload.com/download/DSM/release/7.2.1/69057-1/DSM_RS4021xs%2B_69057.pat"
-      hash: "004f8c7488058570dc752e91f72d37cf17b6ec8c8ec2c7f8b3f1f9c855a02f7e"
-      ramdisk-hash: "36449131812f27a6eb1da9bddcd8fc561526aadf151b7f696da08aa72f5ccd57"
-      zimage-hash: "89100eceac2dd33d7290deb352d6ced734a261003777df7a5745075416dc81fe"
-      md5-hash: "339a5bd6bdcb65b32a57c344fef41dff"
+      hash: "3546405527a97f0f8e60d900dcb50f89add9e65a1b7ca4d1b03fcd3737da087d"
+      ramdisk-hash: "36cd1f8deea8846aec6fa3e694bfcd0a56b72daf57fff53e208eea7d7ea3c36b"
+      zimage-hash: "da4b1872638e978ec71cc06060d0b2720c5a89fb0fa668e93e8116ff8f335904"
+      md5-hash: "fa55d5394111eaa7823551564ac74cd2"
     patch:
       - "ramdisk-64570-disable-root-pwd.patch"
       - "ramdisk-init-script-v4-69057.patch"
@@ -140,10 +140,10 @@ builds:
       <<: *synoinfo
     pat:
       url: "https://global.synologydownload.com/download/DSM/release/7.2.2/72806/DSM_RS4021xs%2B_72806.pat"
-      hash: "004f8c7488058570dc752e91f72d37cf17b6ec8c8ec2c7f8b3f1f9c855a02f7e"
-      ramdisk-hash: "36449131812f27a6eb1da9bddcd8fc561526aadf151b7f696da08aa72f5ccd57"
-      zimage-hash: "89100eceac2dd33d7290deb352d6ced734a261003777df7a5745075416dc81fe"
-      md5-hash: "339a5bd6bdcb65b32a57c344fef41dff"
+      hash: "3546405527a97f0f8e60d900dcb50f89add9e65a1b7ca4d1b03fcd3737da087d"
+      ramdisk-hash: "36cd1f8deea8846aec6fa3e694bfcd0a56b72daf57fff53e208eea7d7ea3c36b"
+      zimage-hash: "da4b1872638e978ec71cc06060d0b2720c5a89fb0fa668e93e8116ff8f335904"
+      md5-hash: "fa55d5394111eaa7823551564ac74cd2"
     patch:
       - "ramdisk-64570-disable-root-pwd.patch"
       - "ramdisk-init-script-v4-69057.patch"
