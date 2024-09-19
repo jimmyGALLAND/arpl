@@ -1,10 +1,9 @@
-
 ###############################################################################
 # Delete a key in config file
 # 1 - Path of Key
 # 2 - Path of yaml config file
 function deleteConfigKey() {
-  yq eval 'del(.'${1}')' --inplace "${2}"
+  yq eval 'del(.'${1}')' --inplace "${2}" 2>/dev/null
 }
 
 ###############################################################################
@@ -13,8 +12,7 @@ function deleteConfigKey() {
 # 2 - Value
 # 3 - Path of yaml config file
 function writeConfigKey() {
-  [ "${2}" = "{}" ] && yq eval '.'${1}' = {}' --inplace "${3}" || \
-    yq eval '.'${1}' = "'${2}'"' --inplace "${3}"
+  [ "${2}" = "{}" ] && yq eval '.'${1}' = {}' --inplace "${3}" 2>/dev/null || yq eval '.'${1}' = "'"${2}"'"' --inplace "${3}" 2>/dev/null
 }
 
 ###############################################################################
@@ -23,8 +21,28 @@ function writeConfigKey() {
 # 2 - Path of yaml config file
 # Return Value
 function readConfigKey() {
-  RESULT=`yq eval '.'${1}' | explode(.)' "${2}"`
-  [ "${RESULT}" == "null" ] && echo "" || echo ${RESULT}
+  RESULT=$(yq eval '.'${1}' | explode(.)' "${2}" 2>/dev/null)
+  [ "${RESULT}" == "null" ] && echo "" || echo "${RESULT}"
+}
+
+# Write to yaml config file
+# 1 - format
+# 2 - string
+# 3 - Path of yaml config file
+function mergeConfigStr() {
+  local JF=$(mktemp)
+  echo "${2}" | yq -p ${1} -o y > "${JF}"
+  yq eval-all --inplace '. as $item ireduce ({}; . * $item)' --inplace "${3}" "${JF}" 2>/dev/null
+  rm -f "${JF}"
+}
+
+###############################################################################
+# Write to yaml config file if key not exists
+# 1 - Path of Key
+# 2 - Value
+# 3 - Path of yaml config file
+function initConfigKey() {
+  [ -z "$(readConfigKey "${1}" "${3}")" ] && writeConfigKey "${1}" "${2}" "${3}" || true
 }
 
 ###############################################################################
@@ -33,7 +51,7 @@ function readConfigKey() {
 # 2 - Path of yaml config file
 # Returns map of values
 function readConfigMap() {
-  yq eval '.'${1}' | explode(.) | to_entries | map([.key, .value] | join(": ")) | .[]' "${2}"
+  yq eval '.'${1}' | explode(.) | to_entries | map([.key, .value] | join(": ")) | .[]' "${2}" 2>/dev/null
 }
 
 ###############################################################################
@@ -42,7 +60,7 @@ function readConfigMap() {
 # 2 - Path of yaml config file
 # Returns array/map of values
 function readConfigArray() {
-  yq eval '.'${1}'[]' "${2}"
+  yq eval '.'${1}'[]' "${2}" 2>/dev/null
 }
 
 ###############################################################################
@@ -51,5 +69,13 @@ function readConfigArray() {
 # 2 - Path of yaml config file
 # Returns array of values
 function readConfigEntriesArray() {
-  yq eval '.'${1}' | explode(.) | to_entries | map([.key])[] | .[]' "${2}"
+  yq eval '.'${1}' | explode(.) | to_entries | map([.key])[] | .[]' "${2}" 2>/dev/null
+}
+
+###############################################################################
+# Check yaml config file
+# 1 - Path of yaml config file
+# Returns error information
+function checkConfigFile() {
+  yq eval "${1}" 2>&1
 }
