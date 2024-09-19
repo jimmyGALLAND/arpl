@@ -254,7 +254,7 @@ function addonMenu() {
         2>${TMP_PATH}/resp
       [ $? -ne 0 ] && continue
       ADDONS[${ADDON}]="$(<"${TMP_PATH}/resp")"
-      writeConfigKey "addons.${ADDON}" "${VALUE}" "${USER_CONFIG_FILE}"
+      writeConfigKey "addons.${ADDON}" "${ADDONS[${ADDON}]}" "${USER_CONFIG_FILE}"
       DIRTY=1
       ;;
     d)
