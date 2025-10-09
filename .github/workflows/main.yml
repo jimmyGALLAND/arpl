@@ -38,11 +38,12 @@ jobs:
           git config --global user.name "github-actions[bot]"
 
           sudo apt update
+
           sudo apt install -y jq gettext libelf-dev qemu-utils cpio rsync bc
           YQ_VERSION=v4.44.3
           sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
-          
+
       # calculates the version number and push
       - name: Calculate version
         run: |
@@ -192,7 +193,7 @@ jobs:
 
       # Upload artifact
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Images
           path: |

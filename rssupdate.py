@@ -123,7 +123,7 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
             models.append(filename.split(".yml")[0])
 
     
-    #models = ['DVA1622', 'DVA3219']
+#    models = ['DS3622xs+']
     print(models)
     
     pats = {}
