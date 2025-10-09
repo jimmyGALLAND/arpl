@@ -38,10 +38,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
 
           sudo apt update
-          sudo apt install -y jq gettext libelf-dev qemu-utils snapd
-          sudo systemctl unmask snapd.service
-          sudo systemctl enable snapd.service
-          sudo systemctl start snapd.service
+          sudo apt install -y jq gettext libelf-dev qemu-utils
           sudo snap install yq
           
       # calculates the version number and push
