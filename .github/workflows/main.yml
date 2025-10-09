@@ -38,7 +38,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
 
           sudo apt update
-          sudo apt install -y jq gettext libelf-dev qemu-utils
+          sudo apt install -y jq gettext libelf-dev qemu-utils snap
           sudo snap install yq
           
       # calculates the version number and push
@@ -190,7 +190,7 @@ jobs:
 
       # Upload artifact
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Images
           path: |

@@ -3,10 +3,25 @@
   "channel": {
     "title": "RSS for DSM Auto Update",
     "link": "https://update.synology.com/autoupdate/v2/getList",
-    "pubDate": "Wednesday, 18-Sep-2024 18:42:11 UTC",
+    "pubDate": "Wednesday, 09-Oct-2025 18:42:11 UTC",
     "copyright": "Copyright 2022 Synology Inc",
     "item": [
-      {
+    {
+      "title": "DSM 7.3-81180",
+      "MajorVer": 7,
+      "MinorVer": 3,
+      "NanoVer": 0,
+      "BuildPhase": "GM",
+      "BuildNum": 81180,
+      "BuildDate": "2025/10/03",
+      "ReqMajorVer": 7,
+      "ReqMinorVer": 2,
+      "ReqBuildPhase": 2,
+      "ReqBuildNum": 72806,
+      "ReqBuildDate": "2024/09/18",
+      "isSecurityVersion": false,
+      "model": []
+    },{
       "title": "DSM 7.2.2-72806",
       "MajorVer": 7,
       "MinorVer": 2,
