@@ -115,11 +115,11 @@ builds:
     synoinfo:
       <<: *synoinfo
     pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.2.3/81180/DSM_DS923%2B_81180.pat"
-      hash: "jtyjdererergthrjjtt"
-      ramdisk-hash: "sdfsdgsdgdfg"
-      zimage-hash: "sgdfgstryjyjjdfgsdfg"
-      md5-hash: "sdfserreghsrthsrth"
+      url: "https://global.synologydownload.com/download/DSM/release/7.3/81180/DSM_DS923%2B_81180.pat"
+      hash: "ae42813938f863c1feb7db8008e49bba9b2d84f79d9b49a3032fbaf8ebd71ee0"
+      ramdisk-hash: "3ff0b4c82780000e4a5031b6599f727c26d5319fac9d2f6130eafa3cea377816"
+      zimage-hash: "bd7d99bd6f8cb76330df30a07449233cd1047bf52cd1a9cbe7bac50f306236b7"
+      md5-hash: "4f1c5a1fe9b1863ac4101804588d263a"
     patch:
       - "ramdisk-64570-disable-root-pwd.patch"
       - "ramdisk-init-script-v4-69057.patch"
