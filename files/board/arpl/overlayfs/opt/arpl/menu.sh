@@ -151,6 +151,7 @@ function buildMenu() {
     # Check addons
     PLATFORM="$(readModelKey "${MODEL}" "platform")"
     KVER="$(readModelKey "${MODEL}" "builds.${BUILD}.kver")"
+    DSMVER="$(readModelKey "${MODEL}" "builds.${BUILD}.ver")"
     while IFS=': ' read ADDON PARAM; do
       [ -z "${ADDON}" ] && continue
       if ! checkAddonExist "${ADDON}" "${PLATFORM}" "${KVER}"; then
@@ -161,7 +162,7 @@ function buildMenu() {
     writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
     while read ID DESC; do
       writeConfigKey "modules.${ID}" "" "${USER_CONFIG_FILE}"
-    done < <(getAllModules "${PLATFORM}" "${KVER}")
+    done < <(getAllModules "${PLATFORM}" "${KVER}" "${DSMVER}")
     # Remove old files
     rm -f "${ORI_ZIMAGE_FILE}" "${ORI_RDGZ_FILE}" "${MOD_ZIMAGE_FILE}" "${MOD_RDGZ_FILE}"
     DIRTY=1
@@ -850,9 +851,10 @@ function tryRecoveryDSM() {
 function selectModules() {
   PLATFORM="$(readModelKey "${MODEL}" "platform")"
   KVER="$(readModelKey "${MODEL}" "builds.${BUILD}.kver")"
+  DSMVER="$(readModelKey "${MODEL}" "builds.${BUILD}.ver")"
   dialog --backtitle "$(backtitle)" --title "Modules" --aspect 18 \
     --infobox "$(TEXT "Reading modules")" 0 0
-  ALLMODULES=$(getAllModules "${PLATFORM}" "${KVER}")
+  ALLMODULES=$(getAllModules "${PLATFORM}" "${KVER}" "${DSMVER}")
   unset USERMODULES
   declare -A USERMODULES
   while IFS=': ' read KEY VALUE; do
@@ -1024,6 +1026,7 @@ function keymapMenu() {
 function updateMenu() {
   PLATFORM="$(readModelKey "${MODEL}" "platform")"
   KVER="$(readModelKey "${MODEL}" "builds.${BUILD}.kver")"
+  DSMVER="$(readModelKey "${MODEL}" "builds.${BUILD}.ver")"
   while true; do
     dialog --backtitle "$(backtitle)" --menu "$(TEXT "Choose a option")" 0 0 0 \
       a "$(TEXT "Update arpl")" \
@@ -1193,7 +1196,7 @@ function updateMenu() {
         writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
         while read ID DESC; do
           writeConfigKey "modules.${ID}" "" "${USER_CONFIG_FILE}"
-        done < <(getAllModules "${PLATFORM}" "${KVER}")
+        done < <(getAllModules "${PLATFORM}" "${KVER}" "${DSMVER}")
       fi
       DIRTY=1
       dialog --backtitle "$(backtitle)" --title "$(TEXT "Update Modules")" --aspect 18 \
