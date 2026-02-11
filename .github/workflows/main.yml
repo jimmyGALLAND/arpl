@@ -193,7 +193,7 @@ jobs:
 
       # Upload artifact
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Images
           path: |
@@ -203,7 +203,7 @@ jobs:
 
       # Publish a release if is a tag
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: env.VERSION != ''
         with:
           tag_name: ${{ env.VERSION }}
