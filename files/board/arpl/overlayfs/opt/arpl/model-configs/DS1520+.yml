@@ -128,7 +128,6 @@ builds:
       - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"
 
-
   72806:
     ver: "7.2.2"
     kver: "4.4.302"
@@ -149,3 +148,23 @@ builds:
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"
+    81180:
+      ver: "7.3"
+      kver: "4.4.302"
+      rd-compressed: false
+      cmdline:
+        <<: *cmdline
+      synoinfo:
+        <<: *synoinfo
+      pat:
+        url: "https://global.synologydownload.com/download/DSM/release/7.2.3/81180/DSM_DS1520%2B_81180.pat"
+        hash: "jtyjdererergthrjjtt"
+        ramdisk-hash: "sdfsdgsdgdfg"
+        zimage-hash: "sgdfgstryjyjjdfgsdfg"
+        md5-hash: "sdfserreghsrthsrth"
+      patch:
+        - "ramdisk-64570-disable-root-pwd.patch"
+        - "ramdisk-init-script-v4-69057.patch"
+        - "ramdisk-common-etc-rc.patch"
+        - "ramdisk-post-init-script-69057.patch"
+        - "ramdisk-42661-disable-disabled-ports.patch"

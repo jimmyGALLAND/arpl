@@ -12,7 +12,12 @@ function deleteConfigKey() {
 # 2 - Value
 # 3 - Path of yaml config file
 function writeConfigKey() {
-  [ "${2}" = "{}" ] && yq eval '.'${1}' = {}' --inplace "${3}" 2>/dev/null || yq eval '.'${1}' = "'"${2}"'"' --inplace "${3}" 2>/dev/null
+  if [ "$2" = "{}" ]; then
+    yq eval ".$1 = {}" --inplace "$3" 2>/dev/null
+  else
+    yq eval --arg val "$2" ".$1 = \$val" --inplace "$3" 2>/dev/null
+  fi
+}
 }
 
 ###############################################################################

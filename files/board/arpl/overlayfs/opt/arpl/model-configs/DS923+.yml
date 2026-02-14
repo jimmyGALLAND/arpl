@@ -34,11 +34,11 @@ builds:
     synoinfo:
       <<: *synoinfo
     pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.1.1/42962-6/DSM_DS923%2B_42962.pat"
-      hash: "17e2ef183233175cea392eff69158780d8c3521d1710d504533524351175cba0"
-      ramdisk-hash: "c934e84d43f0ae7d970ae3b52229f601673c2b3814952c7b85dd809cd957647b"
-      zimage-hash: "351bbabd320ea2966594638aa81c5bf4ae66c520639c25151af2c3bccee9c921"
-      md5-hash: "fd4d36adb0645f7c1215854405da62c3"
+      url: "https://global.synologydownload.com/download/DSM/release/7.1.1/42962-9/DSM_DS923%2B_42962.pat"
+      hash: "80d5a007185be7cd7e316a410bc71b8e4a1a503c2efd5a5ce6b56b5336f1bd8a"
+      ramdisk-hash: "50de2e0f213a08126c442c07a049cbf8a63b8494e4e60762291a3504b67d3593"
+      zimage-hash: "3519d4700483f9cb814b594114cd0e6ca503ce86d131fdc0e42c1a7abdde0097"
+      md5-hash: "23078a25c16c0b0b7899bddff73f325f"
     patch:
       - "ramdisk-common-disable-root-pwd.patch"
       - "ramdisk-common-init-script.patch"
@@ -86,7 +86,6 @@ builds:
       - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"
 
-
   72806:
     ver: "7.2.2"
     kver: "4.4.302"
@@ -101,6 +100,26 @@ builds:
       ramdisk-hash: "d1b6ca9b4a2d7046f8d896dc4dbb6d640af68b1059357d55ad92378b946493b4"
       zimage-hash: "9f34a93ff20dc44015216e8f63820e50229743fe8ed44694d1a2ae37901b78fc"
       md5-hash: "1ab30d0ab9d9d5e53942e101c1011513"
+    patch:
+      - "ramdisk-64570-disable-root-pwd.patch"
+      - "ramdisk-init-script-v4-69057.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-post-init-script-69057.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"
+  81180:
+    ver: "7.3"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.3/81180/DSM_DS923%2B_81180.pat"
+      hash: "ae42813938f863c1feb7db8008e49bba9b2d84f79d9b49a3032fbaf8ebd71ee0"
+      ramdisk-hash: "3ff0b4c82780000e4a5031b6599f727c26d5319fac9d2f6130eafa3cea377816"
+      zimage-hash: "bd7d99bd6f8cb76330df30a07449233cd1047bf52cd1a9cbe7bac50f306236b7"
+      md5-hash: "4f1c5a1fe9b1863ac4101804588d263a"
     patch:
       - "ramdisk-64570-disable-root-pwd.patch"
       - "ramdisk-init-script-v4-69057.patch"

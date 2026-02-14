@@ -37,9 +37,11 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-          sudo apt update
-          sudo apt install -y jq gettext libelf-dev qemu-utils
-          sudo snap install yq
+          apt update
+          apt install -y jq gettext libelf-dev qemu-utils cpio rsync bc
+          YQ_VERSION=v4.44.3
+          wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
           
       # calculates the version number and push
       - name: Calculate version
@@ -190,7 +192,7 @@ jobs:
 
       # Upload artifact
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: Images
           path: |
@@ -200,7 +202,7 @@ jobs:
 
       # Publish a release if is a tag
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: env.VERSION != ''
         with:
           tag_name: ${{ env.VERSION }}

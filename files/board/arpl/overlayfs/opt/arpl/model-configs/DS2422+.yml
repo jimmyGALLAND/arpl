@@ -148,3 +148,24 @@ builds:
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"
+
+  81180:
+    ver: "7.3"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.3/81180/DSM_DS2422%2B_81180.pat"
+      hash: "dc1f00f59a64254269764e6126dafc2ed2f2321a5e4ab52b89033ba3aaded9af"
+      ramdisk-hash: "130b25e8e9e53ee48af419503b86d854edf6ad1bbe4a80d663d10404dd5eeea5"
+      zimage-hash: "f78aace9a01cde264b5f82745bbb2ec20ecc9adfa763478afc8c545ef493d50d"
+      md5-hash: "01fcfdd343a8987a9153e0c15a1190f9"
+    patch:
+      - "ramdisk-64570-disable-root-pwd.patch"
+      - "ramdisk-init-script-v4-69057.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-post-init-script-69057.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"
