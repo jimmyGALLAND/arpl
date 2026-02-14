@@ -173,3 +173,43 @@ builds:
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"
+  86003:
+    ver: "7.3.1"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.3.1/86003/DSM_DVA3219_86003.pat"
+      hash: "d4b9d3f84630118841278cd71c7382445eb483f7ff64451ceb5961b05697dbc5"
+      ramdisk-hash: "ed136718928274c18d50a26c43fcdaa86cd0ad691bb8f75b64bf8816363a7ce8"
+      zimage-hash: "2f09ba6960362901d77b31c6a4a259721c2cc1ee54ff2833fe76a9d78605b467"
+      md5-hash: "34ca7ab2fc63ce104c3552e6a9ce870f"
+    patch:
+      - "ramdisk-64570-disable-root-pwd.patch"
+      - "ramdisk-init-script-v4-69057.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-post-init-script-69057.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"
+  86009:
+    ver: "7.3.2"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.3.2/86009/DSM_DVA3219_86009.pat"
+      hash: "42c26464c132b6490aa6c78642c4c1f9261e3fdcdabb90f12de407dd1daf798a"
+      ramdisk-hash: "0ed317406371fece892056e948ab18b2e4f9af0a9cad7525b689f6a0096fafcd"
+      zimage-hash: "9d821e6ca48bfd010c41005fab5c037410592aef67fc74b6910c51b22c2bf5ee"
+      md5-hash: "0dbd701dfe0916147fd41a3443f9939e"
+    patch:
+      - "ramdisk-64570-disable-root-pwd.patch"
+      - "ramdisk-init-script-v4-69057.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-post-init-script-69057.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"
