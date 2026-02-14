@@ -37,8 +37,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-          apt update
-          apt install -y jq gettext libelf-dev qemu-utils cpio rsync bc
+          sudo apt update -yq
+          sudo apt install -y jq gettext libelf-dev qemu-utils cpio rsync bc
           YQ_VERSION=v4.44.3
           wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/local/bin/yq
           chmod +x /usr/local/bin/yq
