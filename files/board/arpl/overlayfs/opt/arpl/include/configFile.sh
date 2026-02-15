@@ -18,7 +18,6 @@ function writeConfigKey() {
     yq eval --arg val "$2" ".$1 = \$val" --inplace "$3" 2>/dev/null
   fi
 }
-}
 
 ###############################################################################
 # Read key value from yaml config file
