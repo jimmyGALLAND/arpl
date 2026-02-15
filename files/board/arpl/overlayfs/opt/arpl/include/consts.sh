@@ -1,4 +1,4 @@
-ARPL_VERSION="26.2.2"
+ARPL_VERSION="26.2.3"
 ARPL_TITLE="ARPL v ${ARPL_VERSION} - github.com/jimmyGALLAND/arpl"
 
 # Define paths
