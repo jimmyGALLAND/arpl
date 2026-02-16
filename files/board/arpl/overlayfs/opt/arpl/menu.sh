@@ -162,7 +162,7 @@ function buildMenu() {
     writeConfigKey "modules" "{}" "${USER_CONFIG_FILE}"
     while read ID DESC; do
       writeConfigKey "modules.${ID}" "" "${USER_CONFIG_FILE}"
-    done < <(getAllModules "${PLATFORM}" "${KVER}" "${DSMVER}")
+    done < <(getAllModules "${PLATFORM}" "${KVER}" "${dsmversToToolChain $DSMVER}")
     # Remove old files
     rm -f "${ORI_ZIMAGE_FILE}" "${ORI_RDGZ_FILE}" "${MOD_ZIMAGE_FILE}" "${MOD_RDGZ_FILE}"
     DIRTY=1
@@ -854,7 +854,7 @@ function selectModules() {
   DSMVER="$(readModelKey "${MODEL}" "builds.${BUILD}.ver")"
   dialog --backtitle "$(backtitle)" --title "Modules" --aspect 18 \
     --infobox "$(TEXT "Reading modules")" 0 0
-  ALLMODULES=$(getAllModules "${PLATFORM}" "${KVER}" "${DSMVER}")
+  ALLMODULES=$(getAllModules "${PLATFORM}" "${KVER}" "${dsmversToToolChain $DSMVER}")
   unset USERMODULES
   declare -A USERMODULES
   while IFS=': ' read KEY VALUE; do

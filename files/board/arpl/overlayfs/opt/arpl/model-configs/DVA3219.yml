@@ -28,27 +28,6 @@ flags:
   - "movbe"
 disks: 4
 builds:
-  42218:
-    ver: "7.0.1"
-    kver: "4.4.180"
-    rd-compressed: false
-    cmdline:
-      <<: *cmdline
-    synoinfo:
-      <<: *synoinfo
-    pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_DVA3219_42218.pat"
-      hash: "b3498a20aeb7c7c36deca0f4393172d4db7b51aa4fb87eaace83fe224d935e3b"
-      ramdisk-hash: "5b301519fe08200e4cb368b7d23e4ce460d5412428126b9496084ceae3f6d67e"
-      zimage-hash: "8b58e602317286bdd25481c4927a791507589ce0b7c29f1ad394d08b634d41a3"
-      md5-hash: "4345e7cff9ba4fe97793c254c87b3ed5"
-    patch:
-      - "ramdisk-common-disable-root-pwd.patch"
-      - "ramdisk-common-init-script.patch"
-      - "ramdisk-common-etc-rc.patch"
-      - "ramdisk-common-post-init-script.patch"
-      - "ramdisk-common-disable-disabled-ports.patch"
-
   42661:
     ver: "7.1.0"
     kver: "4.4.180"
