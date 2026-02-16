@@ -26,26 +26,6 @@ serial:
 disks: 6
 dt: true
 builds:
-  42218:
-    ver: "7.0.1"
-    kver: "4.4.180"
-    rd-compressed: false
-    cmdline:
-      <<: *cmdline
-    synoinfo:
-      <<: *synoinfo
-    pat:
-      url: "https://global.synologydownload.com/download/DSM/release/7.0.1/42218/DSM_DS1520%2B_42218.pat"
-      hash: "b8864e2becd8ce5a6083db993564c8c0b982df8300a006b56695a0495a670aa3"
-      ramdisk-hash: "7679ab11e895302425533c64e0dded211b38b8af71f2dd268c47a68bc9f6818a"
-      zimage-hash: "70e93678f3932c35c5e884f950e50b36f8dc6366f96dd9a454c8d47ecbaee5de"
-      md5-hash: "d1ebc3c9a2b9e04980a85c4784904f91"
-    patch:
-      - "ramdisk-common-disable-root-pwd.patch"
-      - "ramdisk-common-init-script.patch"
-      - "ramdisk-common-etc-rc.patch"
-      - "ramdisk-common-post-init-script.patch"
-
   42661:
     ver: "7.1.0"
     kver: "4.4.180"
