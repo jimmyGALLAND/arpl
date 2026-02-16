@@ -21,5 +21,4 @@ function getAllModules() {
     echo "${M} \"${DESC}\""
   done
   rm -rf "${TMP_PATH}/modules"
-  exit
 }
