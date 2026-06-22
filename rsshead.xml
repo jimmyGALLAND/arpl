@@ -6,6 +6,19 @@
       <pubDate>Wednesday, 16-February-2026 18:42:11 UTC</pubDate>
       <copyright>Copyright 2024 Synology Inc</copyright>
   <item>
+    <title>DSM 7.4-90075</title>
+    <MajorVer>7</MajorVer>
+    <MinorVer>4</MinorVer>
+    <BuildPhase>0</BuildPhase>
+    <BuildNum>90075</BuildNum>
+    <BuildDate>2026/05/08</BuildDate>
+    <ReqMajorVer>7</ReqMajorVer>
+    <ReqMinorVer>0</ReqMinorVer>
+    <ReqBuildPhase>1</ReqBuildPhase>
+    <ReqBuildNum>42218</ReqBuildNum>
+    <ReqBuildDate>2023/01/17</ReqBuildDate>
+  </item>
+  <item>
       <title>DSM 7.3-81180</title>
       <MajorVer>7</MajorVer>
       <MinorVer>3</MinorVer>

@@ -236,7 +236,7 @@ def main(isUpdateConfigs = True, isUpdateRss = True):
             pass
 
     rssxml.write("rss.xml", xml_declaration=True)
-    commands = ['sed', '-i', 's|^<?xml .*\?>$|<?xml version="1.0"?>|', os.path.join(FILE_PATH, 'rss.xml')]
+    commands = ['sed', '-i', r's|^<?xml .*\?>$|<?xml version="1.0"?>|', os.path.join(FILE_PATH, 'rss.xml')]
     result = subprocess.check_output(commands)
     commands = ['xmllint', '--format', 'rss.xml', '-o', 'rss_new.xml']
     result = subprocess.check_output(commands)

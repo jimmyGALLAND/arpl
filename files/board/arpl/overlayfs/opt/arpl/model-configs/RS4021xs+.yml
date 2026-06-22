@@ -189,3 +189,23 @@ builds:
       - "ramdisk-common-etc-rc.patch"
       - "ramdisk-post-init-script-69057.patch"
       - "ramdisk-42661-disable-disabled-ports.patch"
+  90075:
+    ver: "7.4"
+    kver: "4.4.302"
+    rd-compressed: false
+    cmdline:
+      <<: *cmdline
+    synoinfo:
+      <<: *synoinfo
+    pat:
+      url: "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_RS4021xs%2B_90075.pat"
+      hash: "6f486f647877c5ae6c6ae0477853ea54903ee020f43a0e82605f109f37ef1557"
+      ramdisk-hash: "s6f486f647877c5ae6c6ae0477853ea54903ee020f43a0e82605f109f37ef1557sdfg"
+      zimage-hash: "s6f486f647877c5ae6c6ae0477853ea54903ee020f43a0e82605f109f37ef1557"
+      md5-hash: "s6f486f647877c5ae6c6ae0477853ea54903ee020f43a0e82605f109f37ef1557dsfg"
+    patch:
+      - "ramdisk-64570-disable-root-pwd.patch"
+      - "ramdisk-init-script-v4-69057.patch"
+      - "ramdisk-common-etc-rc.patch"
+      - "ramdisk-post-init-script-69057.patch"
+      - "ramdisk-42661-disable-disabled-ports.patch"

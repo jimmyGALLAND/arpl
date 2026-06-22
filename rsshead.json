@@ -6,37 +6,55 @@
     "pubDate": "Wednesday, 16-Feb-2026 18:42:11 UTC",
     "copyright": "Copyright 2022 Synology Inc",
     "item": [
-    {
-      "title": "DSM 7.3-81180",
-      "MajorVer": 7,
-      "MinorVer": 3,
-      "NanoVer": 0,
-      "BuildPhase": "GM",
-      "BuildNum": 81180,
-      "BuildDate": "2025/10/03",
-      "ReqMajorVer": 7,
-      "ReqMinorVer": 2,
-      "ReqBuildPhase": 2,
-      "ReqBuildNum": 72806,
-      "ReqBuildDate": "2024/09/18",
-      "isSecurityVersion": false,
-      "model": []
-    },{
-      "title": "DSM 7.2.2-72806",
-      "MajorVer": 7,
-      "MinorVer": 2,
-      "NanoVer": 2,
-      "BuildPhase": "GM",
-      "BuildNum": 72806,
-      "BuildDate": "2024/09/18",
-      "ReqMajorVer": 7,
-      "ReqMinorVer": 2,
-      "ReqBuildPhase": 1,
-      "ReqBuildNum": 69057,
-      "ReqBuildDate": "2023/09/26",
-      "isSecurityVersion": false,
-      "model": []
-    }, {
+      {
+        "title": "DSM 7.4-90075",
+        "MajorVer": 7,
+        "MinorVer": 4,
+        "NanoVer": 0,
+        "BuildPhase": 0,
+        "BuildNum": 90075,
+        "BuildDate": "2026/05/08",
+        "ReqMajorVer": 7,
+        "ReqMinorVer": 0,
+        "ReqBuildPhase": 1,
+        "ReqBuildNum": 42218,
+        "ReqBuildDate": "2023/01/17",
+        "isSecurityVersion": false,
+        "model": []
+      },
+      {
+        "title": "DSM 7.3-81180",
+        "MajorVer": 7,
+        "MinorVer": 3,
+        "NanoVer": 0,
+        "BuildPhase": "GM",
+        "BuildNum": 81180,
+        "BuildDate": "2025/10/03",
+        "ReqMajorVer": 7,
+        "ReqMinorVer": 2,
+        "ReqBuildPhase": 2,
+        "ReqBuildNum": 72806,
+        "ReqBuildDate": "2024/09/18",
+        "isSecurityVersion": false,
+        "model": []
+      },
+      {
+        "title": "DSM 7.2.2-72806",
+        "MajorVer": 7,
+        "MinorVer": 2,
+        "NanoVer": 2,
+        "BuildPhase": "GM",
+        "BuildNum": 72806,
+        "BuildDate": "2024/09/18",
+        "ReqMajorVer": 7,
+        "ReqMinorVer": 2,
+        "ReqBuildPhase": 1,
+        "ReqBuildNum": 69057,
+        "ReqBuildDate": "2023/09/26",
+        "isSecurityVersion": false,
+        "model": []
+      },
+      {
         "title": "DSM 7.2.1-69057",
         "MajorVer": 7,
         "MinorVer": 2,
@@ -51,7 +69,8 @@
         "ReqBuildDate": "2023/01/18",
         "isSecurityVersion": false,
         "model": []
-      }, {
+      },
+      {
         "title": "DSM 7.2-64570",
         "MajorVer": 7,
         "MinorVer": 2,
@@ -98,7 +117,7 @@
         "ReqBuildDate": "2021/06/25",
         "isSecurityVersion": false,
         "model": []
-      },
+      }
     ]
   }
 }
