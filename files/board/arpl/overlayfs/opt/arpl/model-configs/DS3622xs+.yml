@@ -204,9 +204,9 @@ builds:
     pat:
       url: "https://global.synologydownload.com/download/DSM/release/7.4/90075/DSM_DS3622xs%2B_90075.pat"
       hash: "433540aed1745adee0dc69ce28029610c3c8da9cf5ad1860b3176647cbc1a33d"
-      ramdisk-hash: "s433540aed1745adee0dc69ce28029610c3c8da9cf5ad1860b3176647cbc1a33dsdfg"
-      zimage-hash: "s433540aed1745adee0dc69ce28029610c3c8da9cf5ad1860b3176647cbc1a33d"
-      md5-hash: "s433540aed1745adee0dc69ce28029610c3c8da9cf5ad1860b3176647cbc1a33ddsfg"
+      ramdisk-hash: "1e6530a7b1ee75158cb5cdaa1506b5b4e16cdec3f816839e7fda79831b9554b2"
+      zimage-hash: "8021ec8d869582d1173ffb3c359e2e1f66d3ae48a5e6b57de80d90eee74fca8f"
+      md5-hash: "8021ec8d869582d1173ffb3c359e2e1f66d3ae48a5e6b57de80d90eee74fca8fdsfg"
     patch:
       - "ramdisk-64570-disable-root-pwd.patch"
       - "ramdisk-init-script-v4-69057.patch"
