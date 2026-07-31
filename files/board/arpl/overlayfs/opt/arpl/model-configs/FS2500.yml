@@ -201,7 +201,7 @@ builds:
       hash: "476414145df197248d2cf2258be73731669859636fb2ef9869b02cc1ce6c969a"
       ramdisk-hash: "5d794adc2f074e03e03c2010cf060ac52e1983b604e91e70e65a4995210770be"
       zimage-hash: "b9ac056afc9808733573335511d33f9d0b705a89a87cc94424f87a159faeb63c"
-      md5-hash: "b9ac056afc9808733573335511d33f9d0b705a89a87cc94424f87a159faeb63cdsfg"
+      md5-hash: "d2901adfce926f837fc852759927380f"
     patch:
       - "ramdisk-64570-disable-root-pwd.patch"
       - "ramdisk-init-script-v4-69057.patch"
