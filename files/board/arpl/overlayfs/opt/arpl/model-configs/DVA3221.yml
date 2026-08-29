@@ -223,10 +223,10 @@ builds:
       <<: *synoinfo
     pat:
       url: "https://global.synologydownload.com/download/DSM/release/7.4.1/90080/DSM_DVA3221_90080.pat"
-      hash: "8cc2df0ce7e7f832aa101b179"
-      ramdisk-hash: "07e48f1909026b98188c99b1b5460fa5002791706d60e0fef1"
-      zimage-hash: "f1dc370bb612c95f7063ef5f90b"
-      md5-hash: "2e20b24d30e98a9bc"
+      hash: "dd9ec38a0b40a45747371e0bb0bf59d05d454599aae6d5dfe4d1a647d3acb6a4"
+      ramdisk-hash: "c9f3836dbef908ddb1a9f61de0a44cad3095410e97b1d04b71a089fc3e2d57c5"
+      zimage-hash: "bbae68cef879a02b44723fcabbaf96f31da40bde1e2058ef53312895fb401e91"
+      md5-hash: "cbd82bb9f71d9e0c16b1182ffd36cae7"
     patch:
       - "ramdisk-64570-disable-root-pwd.patch"
       - "ramdisk-init-script-v4-69057.patch"
