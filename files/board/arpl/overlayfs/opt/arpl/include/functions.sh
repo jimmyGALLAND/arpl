@@ -197,7 +197,7 @@ function findAndMountDSMRoot() {
 # 1 - DSM Version
 function dsmversToToolChain() {
   tc=${1:0:3}
-  [ ${tc} = "7.0" ] && tc="7.1" // Use toolchain 7.1 for 7.0
+  #[ ${tc} = "7.0" ] && tc="7.1" // Use toolchain 7.1 for 7.0
   echo "$tc"
 }
 
